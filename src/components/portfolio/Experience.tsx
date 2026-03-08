@@ -17,7 +17,7 @@ const expColors = [
 export default function Experience() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { isOwnerView } = useEditMode();
+  const { isOwnerView, get } = useEditMode();
   const { count, add, remove } = useDynamicSection("exp", 4);
 
   return (
