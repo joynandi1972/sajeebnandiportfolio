@@ -222,3 +222,22 @@
 .animate-scale-in {
   animation: scaleIn 0.4s ease-out forwards;
 }
+
+/* Content protection for visitors */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.no-select img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+.no-select a,
+.no-select button {
+  pointer-events: auto;
+}
