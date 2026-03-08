@@ -77,8 +77,8 @@ export default function Skills() {
                         <span className="font-semibold text-sm text-foreground">
                           <EditableText contentKey={`skill.${i}.name`} className="font-semibold text-sm" placeholder="Skill Name" />
                         </span>
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          <EditableText contentKey={`skill.${i}.desc`} className="text-xs" placeholder="Brief description" />
+                        <p className="text-xs text-muted-foreground mt-0.5 text-justify">
+                          <EditableText contentKey={`skill.${i}.desc`} className="text-xs text-justify" placeholder="Brief description" />
                         </p>
                       </div>
                       <div className="text-sm font-bold ml-3 flex-shrink-0 flex items-center gap-1" style={{ color: "hsl(var(--primary))" }}>

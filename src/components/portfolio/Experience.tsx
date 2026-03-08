@@ -110,9 +110,9 @@ export default function Experience() {
                     </div>
                     <ul className="mt-3 space-y-2">
                       {[0, 1, 2].map(j => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/75">
+                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/75 text-justify">
                           <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                          <EditableText contentKey={`exp.${i}.point${j}`} className="text-sm" placeholder={`Key point ${j + 1}`} />
+                          <EditableText contentKey={`exp.${i}.point${j}`} className="text-sm text-justify" placeholder={`Key point ${j + 1}`} />
                         </li>
                       ))}
                     </ul>
