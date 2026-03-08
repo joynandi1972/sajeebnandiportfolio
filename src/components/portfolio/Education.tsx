@@ -23,7 +23,6 @@ export default function Education() {
   const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("edu_entries", 3);
 
-  // Build entry list: first 3 use defaults, extras get generic config
   const entries = Array.from({ length: count }, (_, i) => {
     if (i < defaultEntries.length) return { ...defaultEntries[i], isDefault: true };
     const Icon = extraIcons[(i - defaultEntries.length) % extraIcons.length];
@@ -37,21 +36,29 @@ export default function Education() {
   });
 
   return (
-    <section id="education" className="section-padding relative overflow-hidden" style={{ background: "hsl(var(--secondary))" }}>
+    <section id="education" className="section-padding relative overflow-hidden" style={{ background: "var(--gradient-section-alt)" }}>
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
       <div className="absolute top-0 right-0 w-72 h-72 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 70% 30%, hsl(155 40% 60% / 0.08), transparent 60%)" }} />
+        style={{ background: "radial-gradient(circle at 80% 20%, hsl(155 40% 60% / 0.08), transparent 60%)" }} />
       <div className="absolute bottom-0 left-0 w-64 h-64 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 40% 60% / 0.05), transparent 60%)" }} />
+        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 40% 60% / 0.06), transparent 60%)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }} className="text-center mb-14">
+          transition={{ duration: 0.6 }} className="text-center mb-16">
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4 }}>
+            Academic Journey
+          </motion.span>
           <h2 className="section-title">Education</h2>
           <motion.div
             initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 1.5rem" }}
           />
         </motion.div>
 
@@ -80,7 +87,10 @@ export default function Education() {
 
                     <motion.div
                       className="hidden sm:flex absolute left-0 top-6 w-12 h-12 rounded-full items-center justify-center z-10"
-                      style={{ background: `linear-gradient(135deg, ${accent}, hsl(155 40% 55%))`, boxShadow: `0 0 0 4px hsl(var(--secondary)), 0 0 16px ${accent}50` }}
+                      style={{
+                        background: `linear-gradient(135deg, ${accent}, hsl(155 40% 55%))`,
+                        boxShadow: `0 0 0 4px hsl(var(--secondary)), 0 4px 16px ${accent}60`
+                      }}
                       initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.35 + i * 0.18, type: "spring", stiffness: 250 }}
                       whileHover={{ scale: 1.12 }}>
@@ -88,19 +98,23 @@ export default function Education() {
                     </motion.div>
 
                     <motion.div
-                      whileHover={{ y: -4, boxShadow: "0 20px 50px -10px hsl(155 40% 20% / 0.16)" }}
-                      className="relative p-6 sm:p-8 rounded-2xl bg-card border border-border shadow-sm transition-all duration-300 group overflow-hidden">
+                      whileHover={{ y: -5 }}
+                      transition={{ duration: 0.25 }}
+                      className="relative p-6 sm:p-8 rounded-2xl bg-card border border-border transition-all duration-300 group overflow-hidden"
+                      style={{ boxShadow: "var(--shadow-card)" }}>
 
                       <motion.div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
                         style={{ background: `linear-gradient(180deg, ${accent}, hsl(var(--primary-muted)))` }}
                         initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
                         transition={{ duration: 0.7, delay: 0.5 + i * 0.18 }} />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
-                        style={{ background: "radial-gradient(circle at 20% 50%, hsl(155 40% 85% / 0.06), transparent 60%)" }} />
-                      <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                        style={{ background: `linear-gradient(90deg, transparent, ${accent}60, transparent)` }} />
+                      {/* Hover bg glow */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
+                        style={{ background: "radial-gradient(circle at 20% 50%, hsl(155 40% 85% / 0.07), transparent 65%)" }} />
+                      {/* Top shine line */}
+                      <div className="absolute top-0 left-8 right-8 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+                        style={{ background: `linear-gradient(90deg, transparent, ${accent}70, transparent)` }} />
 
-                      {/* Remove button — only for extras, owner only */}
+                      {/* Remove button */}
                       {isOwnerView && !isDefault && (
                         <button
                           onClick={() => remove(i)}
@@ -121,17 +135,17 @@ export default function Education() {
 
                       <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                         <div>
-                          <h3 className="font-display font-semibold text-lg sm:text-xl text-foreground leading-snug">
+                          <h3 className="font-display font-semibold text-lg sm:text-xl text-foreground leading-snug group-hover:text-primary transition-colors duration-200">
                             <EditableText contentKey={`${key}.degree`} className="font-display font-semibold" placeholder="Degree / Certificate" />
                           </h3>
-                          <p className="font-medium mt-0.5 text-sm" style={{ color: accent }}>
-                            <EditableText contentKey={`${key}.university`} className="font-medium text-sm" placeholder="Institution" />
+                          <p className="font-semibold mt-0.5 text-sm" style={{ color: accent }}>
+                            <EditableText contentKey={`${key}.university`} className="font-semibold text-sm" placeholder="Institution" />
                           </p>
                         </div>
                         {badge.pulse ? (
                           <motion.span animate={{ opacity: [1, 0.6, 1] }} transition={{ duration: 2, repeat: Infinity }}
                             className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold flex-shrink-0"
-                            style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))" }}>
+                            style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
                             <Sparkles className="w-3 h-3" /> {badge.label}
                           </motion.span>
                         ) : (
@@ -153,7 +167,7 @@ export default function Education() {
                         </span>
                       </div>
 
-                      <div className="flex flex-wrap gap-3 mb-4">
+                      <div className="flex flex-wrap gap-2 mb-4">
                         {[`${key}.group`, `${key}.result`].map((k) => {
                           const val = get(k);
                           return val ? (
@@ -178,8 +192,8 @@ export default function Education() {
                               initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: 0.6 + i * 0.18 + ti * 0.06 }}
                               whileHover={{ scale: 1.07 }}
-                              className="px-2.5 py-0.5 rounded text-xs cursor-default"
-                              style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}>
+                              className="px-2.5 py-0.5 rounded-full text-xs font-medium cursor-default"
+                              style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))", border: "1px solid hsl(var(--border))" }}>
                               {tag}
                             </motion.span>
                           ))}
@@ -192,7 +206,6 @@ export default function Education() {
             </AnimatePresence>
           </div>
 
-          {/* Add button — owner only */}
           {isOwnerView && (
             <motion.button
               whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
