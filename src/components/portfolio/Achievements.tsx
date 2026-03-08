@@ -149,11 +149,11 @@ export default function Achievements() {
   }, [setCert]);
 
   return (
-    <section id="achievements" className="section-padding relative overflow-hidden" style={{ background: "hsl(var(--secondary))" }}>
+    <section id="achievements" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(155 40% 60% / 0.07), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute inset-0 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(155 55% 50% / 0.08), transparent 60%)", filter: "blur(60px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
