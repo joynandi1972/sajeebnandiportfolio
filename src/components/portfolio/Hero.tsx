@@ -69,7 +69,7 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
 
 export default function Hero() {
   const { photo, save, remove } = useProfilePhoto();
-  const { isEditing, get } = useEditMode();
+  const { isEditing, isOwnerView, get } = useEditMode();
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -312,10 +312,10 @@ export default function Hero() {
                 style={{ border: dragOver ? "3px solid hsl(155 60% 55%)" : "3px solid hsl(155 45% 45% / 0.6)", boxShadow: "0 25px 60px -10px hsl(155 50% 8% / 0.6), 0 0 60px hsl(155 50% 30% / 0.15)", transition: "border-color 0.2s" }}
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
-                onClick={() => inputRef.current?.click()}
-                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                onClick={() => isOwnerView && inputRef.current?.click()}
+                onDragOver={e => { if (!isOwnerView) return; e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
+                onDrop={isOwnerView ? handleDrop : undefined}
               >
                 <img src={photo || profileImg} alt="Sajeeb Nandi" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 {/* Overlay shimmer */}
@@ -324,7 +324,7 @@ export default function Hero() {
                   style={{ background: "linear-gradient(135deg, hsl(155 50% 50% / 0.1) 0%, transparent 50%, hsl(165 50% 50% / 0.1) 100%)" }}
                 />
                 <AnimatePresence>
-                  {(hovering || dragOver) && (
+                  {isOwnerView && (hovering || dragOver) && (
                     <motion.div
                       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
@@ -344,7 +344,7 @@ export default function Hero() {
               </div>
 
               <AnimatePresence>
-                {photo && (
+                {isOwnerView && photo && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }}
                     onClick={handleRemove} title="Remove photo"
@@ -366,17 +366,21 @@ export default function Hero() {
               </motion.div>
             </motion.div>
 
-            <motion.button
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => inputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200"
-              style={{ background: "hsl(155 35% 22% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 35% 42% / 0.5)" }}>
-              <Upload className="w-3 h-3" />
-              {photo ? "Change photo" : "Upload your photo"}
-            </motion.button>
-            <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
+            {isOwnerView && (
+              <>
+                <motion.button
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => inputRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200"
+                  style={{ background: "hsl(155 35% 22% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 35% 42% / 0.5)" }}>
+                  <Upload className="w-3 h-3" />
+                  {photo ? "Change photo" : "Upload your photo"}
+                </motion.button>
+                <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
+              </>
+            )}
           </motion.div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn, Tag, Plus, Upload, ImagePlus, Trash2, Check } from "lucide-react";
+import { useEditMode } from "@/contexts/EditMode";
 
 type Category = "All" | "Fieldwork" | "Research" | "Events" | "Leadership";
 
@@ -255,6 +256,7 @@ export default function Gallery() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const { items: customItems, add, remove } = useCustomPhotos();
+  const { isOwnerView } = useEditMode();
 
   const allItems = [...defaultItems, ...customItems];
 
@@ -334,17 +336,19 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Add Photo button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setShowUpload(true)}
-            className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-            style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", boxShadow: "var(--shadow-green)" }}
-          >
-            <Plus className="w-4 h-4" />
-            Add Photo
-          </motion.button>
+          {/* Add Photo button — owner only */}
+          {isOwnerView && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setShowUpload(true)}
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+              style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", boxShadow: "var(--shadow-green)" }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Photo
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Toast */}
@@ -393,8 +397,8 @@ export default function Gallery() {
                   </div>
                 )}
 
-                {/* Delete button for custom photos */}
-                {item.isCustom && (
+                {/* Delete button for custom photos — owner only */}
+                {isOwnerView && item.isCustom && (
                   <button
                     onClick={e => handleDelete(item.id, e)}
                     className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 hover:scale-110"
@@ -439,15 +443,17 @@ export default function Gallery() {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-3">No photos in this category yet.</p>
-            <button onClick={() => setShowUpload(true)} className="px-5 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
-              style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
-              <Plus className="w-4 h-4 inline mr-1" />Add a Photo
-            </button>
+            {isOwnerView && (
+              <button onClick={() => setShowUpload(true)} className="px-5 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
+                style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
+                <Plus className="w-4 h-4 inline mr-1" />Add a Photo
+              </button>
+            )}
           </div>
         )}
 
-        {/* Empty custom section CTA */}
-        {customItems.length === 0 && (
+        {/* Empty custom section CTA — owner only */}
+        {isOwnerView && customItems.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
