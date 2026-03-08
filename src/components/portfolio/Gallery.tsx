@@ -443,15 +443,17 @@ export default function Gallery() {
         {filtered.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground mb-3">No photos in this category yet.</p>
-            <button onClick={() => setShowUpload(true)} className="px-5 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
-              style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
-              <Plus className="w-4 h-4 inline mr-1" />Add a Photo
-            </button>
+            {isOwnerView && (
+              <button onClick={() => setShowUpload(true)} className="px-5 py-2 rounded-full text-sm font-semibold transition-all hover:scale-105"
+                style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
+                <Plus className="w-4 h-4 inline mr-1" />Add a Photo
+              </button>
+            )}
           </div>
         )}
 
-        {/* Empty custom section CTA */}
-        {customItems.length === 0 && (
+        {/* Empty custom section CTA — owner only */}
+        {isOwnerView && customItems.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={inView ? { opacity: 1 } : {}}
