@@ -25,14 +25,36 @@ export const DEFAULT_CONTENT: Record<string, string> = {
     "My research focuses on plant growth regulators, floral biology, and vertical farming for urban food security. I am a strong team player with a passion for bridging research, coordination, and communication to create real-world environmental impact.",
   "about.tags": "Plant Science,Sustainable Agriculture,Vertical Farming,Leadership,Data Analysis",
 
-  // Education
+  // Education — BSc
   "edu.degree": "Bachelor of Science in Botany",
   "edu.university": "University of Barishal",
   "edu.period": "February 2022 – Present",
   "edu.location": "Barishal, Bangladesh",
   "edu.description":
     "Focused on plant physiology, botany research, and environmental biology. Conducted fieldwork, laboratory experiments, and statistical analysis as part of undergraduate research projects.",
+  "edu.group": "",
+  "edu.result": "",
   "edu.tags": "Plant Physiology,Field Research,Lab Techniques,Statistical Analysis",
+
+  // Education — HSC
+  "hsc.degree": "Higher Secondary School Certificate (HSC)",
+  "hsc.university": "Noapara Government College",
+  "hsc.period": "2017 – 2019",
+  "hsc.location": "Noapara, Jashore",
+  "hsc.group": "Group: Science",
+  "hsc.result": "GPA 5.00",
+  "hsc.description": "",
+  "hsc.tags": "",
+
+  // Education — SSC
+  "ssc.degree": "Secondary School Certificate (SSC)",
+  "ssc.university": "Noapara Shankerpasha Model High School",
+  "ssc.period": "2015 – 2017",
+  "ssc.location": "Noapara, Jashore",
+  "ssc.group": "Group: Science",
+  "ssc.result": "GPA 5.00",
+  "ssc.description": "",
+  "ssc.tags": "",
 
   // Experience – YSSE
   "exp.0.title": "Admin & HR Intern",
