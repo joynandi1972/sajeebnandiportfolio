@@ -22,14 +22,14 @@ function useProfilePhoto() {
   return { photo, save, remove };
 }
 
-// Floating particle component
-function Particle({ style }: { style: React.CSSProperties }) {
+// Floating particle component — slow drift
+function Particle({ style, dur, delay }: { style: React.CSSProperties; dur: number; delay: number }) {
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
       style={style}
-      animate={{ y: [-20, 20, -20], x: [-8, 8, -8], opacity: [0.2, 0.6, 0.2] }}
-      transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 3 }}
+      animate={{ y: [-18, 18, -18], x: [-10, 10, -10], opacity: [0.15, 0.5, 0.15] }}
+      transition={{ duration: dur, repeat: Infinity, ease: "easeInOut", delay }}
     />
   );
 }
@@ -125,89 +125,43 @@ export default function Hero() {
 
   const particles = Array.from({ length: 20 }, (_, i) => ({
     style: {
-      width: `${3 + Math.random() * 5}px`,
-      height: `${3 + Math.random() * 5}px`,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      background: `hsl(155 ${50 + Math.random() * 20}% ${50 + Math.random() * 20}% / 0.4)`,
+      width: `${3 + (i * 7 % 5)}px`,
+      height: `${3 + (i * 7 % 5)}px`,
+      left: `${(i * 17 + 5) % 100}%`,
+      top: `${(i * 23 + 10) % 100}%`,
+      background: `hsl(155 ${50 + (i * 11 % 20)}% ${50 + (i * 13 % 20)}% / 0.4)`,
     } as React.CSSProperties,
+    dur: 8 + (i % 7) * 2,
+    delay: (i % 5) * 1.2,
     id: i,
   }));
 
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden gradient-hero">
-      {/* ── Aurora background ─────────────────────────────────────────── */}
+      {/* Animated background orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Base noise texture overlay */}
-        <div className="absolute inset-0 opacity-[0.03]"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")", backgroundSize: "200px 200px" }} />
-
-        {/* Aurora blob 1 — teal sweep */}
         <motion.div
-          className="absolute rounded-full blur-[120px]"
-          style={{
-            width: "70vw", height: "60vh",
-            top: "-10%", left: "-15%",
-            background: "radial-gradient(ellipse, hsl(165 70% 45% / 0.35) 0%, hsl(155 60% 30% / 0.2) 50%, transparent 70%)",
-          }}
-          animate={{
-            x: [0, 80, -40, 0],
-            y: [0, 60, -30, 0],
-            scale: [1, 1.15, 0.9, 1],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        {/* Aurora blob 2 — deep green sweep */}
-        <motion.div
-          className="absolute rounded-full blur-[140px]"
-          style={{
-            width: "65vw", height: "55vh",
-            bottom: "-5%", right: "-10%",
-            background: "radial-gradient(ellipse, hsl(145 65% 38% / 0.3) 0%, hsl(160 55% 25% / 0.18) 50%, transparent 70%)",
-          }}
-          animate={{
-            x: [0, -60, 40, 0],
-            y: [0, -50, 30, 0],
-            scale: [1, 0.88, 1.1, 1],
-          }}
-          transition={{ duration: 22, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-        />
-
-        {/* Aurora blob 3 — lime accent center */}
-        <motion.div
-          className="absolute rounded-full blur-[100px]"
-          style={{
-            width: "50vw", height: "50vh",
-            top: "30%", left: "25%",
-            background: "radial-gradient(ellipse, hsl(155 80% 55% / 0.12) 0%, hsl(165 60% 40% / 0.08) 60%, transparent 80%)",
-          }}
-          animate={{
-            scale: [1, 1.3, 0.85, 1],
-            rotate: [0, 45, -30, 0],
-          }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        />
-
-        {/* Horizontal scan line shimmer */}
-        <motion.div
-          className="absolute left-0 right-0 h-[2px] blur-sm"
-          style={{ background: "linear-gradient(90deg, transparent, hsl(155 70% 60% / 0.5), hsl(165 80% 65% / 0.6), transparent)", top: "35%" }}
-          animate={{ top: ["10%", "90%", "10%"], opacity: [0, 0.7, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute -top-32 -right-32 w-[600px] h-[600px] rounded-full"
+          style={{ background: "radial-gradient(circle, hsl(155 60% 40% / 0.15), transparent 70%)" }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.15, 0.25, 0.15] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute left-0 right-0 h-[1px] blur-sm"
-          style={{ background: "linear-gradient(90deg, transparent, hsl(145 65% 55% / 0.4), transparent)", top: "60%" }}
-          animate={{ top: ["80%", "20%", "80%"], opacity: [0, 0.5, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut", delay: 5 }}
+          className="absolute bottom-0 -left-32 w-[500px] h-[500px] rounded-full"
+          style={{ background: "radial-gradient(circle, hsl(165 55% 35% / 0.12), transparent 70%)" }}
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.12, 0.2, 0.12] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-
-        {/* Dot grid overlay */}
-        <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
-
-        {/* Floating particles */}
-        {particles.map(p => <Particle key={p.id} style={p.style} />)}
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full"
+          style={{ background: "radial-gradient(circle, hsl(155 40% 30% / 0.06), transparent 60%)" }}
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+        />
+        {/* Dot grid */}
+        <div className="absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        {/* Floating particles — slow drift */}
+        {particles.map(p => <Particle key={p.id} style={p.style} dur={p.dur} delay={p.delay} />)}
       </div>
 
       {/* Toast */}
