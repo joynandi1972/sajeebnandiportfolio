@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      portfolio_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       visitor_logs: {
         Row: {
           browser: string | null
