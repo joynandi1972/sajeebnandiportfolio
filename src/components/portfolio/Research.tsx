@@ -97,12 +97,16 @@ export default function Research() {
                         <EditableText contentKey={`res.${i}.description`} multiline rows={3} className="text-sm leading-relaxed text-justify" placeholder="Research description..." />
                       </p>
                       <ul className="space-y-1.5 mb-4">
-                        {[0, 1, 2, 3].map(j => (
-                          <li key={j} className="flex items-start gap-2 text-sm text-foreground/70 text-justify">
-                            <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                            <EditableText contentKey={`res.${i}.point${j}`} className="text-sm text-justify" placeholder={`Key point ${j + 1}`} />
-                          </li>
-                        ))}
+                        {[0, 1, 2, 3].map(j => {
+                          const val = get(`res.${i}.point${j}`);
+                          if (!isOwnerView && !val) return null;
+                          return (
+                            <li key={j} className="flex items-start gap-2 text-sm text-foreground/70 text-justify">
+                              <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                              <EditableText contentKey={`res.${i}.point${j}`} className="text-sm text-justify" placeholder={`Key point ${j + 1}`} />
+                            </li>
+                          );
+                        })}
                       </ul>
                       <div className="flex flex-wrap gap-2">
                         {tags.map((tag, ti) => (
