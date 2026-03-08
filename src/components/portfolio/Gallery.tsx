@@ -336,17 +336,19 @@ export default function Gallery() {
             ))}
           </div>
 
-          {/* Add Photo button */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => setShowUpload(true)}
-            className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
-            style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", boxShadow: "var(--shadow-green)" }}
-          >
-            <Plus className="w-4 h-4" />
-            Add Photo
-          </motion.button>
+          {/* Add Photo button — owner only */}
+          {isOwnerView && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setShowUpload(true)}
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200"
+              style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", boxShadow: "var(--shadow-green)" }}
+            >
+              <Plus className="w-4 h-4" />
+              Add Photo
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Toast */}
