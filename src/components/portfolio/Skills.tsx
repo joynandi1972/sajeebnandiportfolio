@@ -62,8 +62,8 @@ export default function Skills() {
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.55, delay: 0.15 + i * 0.1 }}
                     className="group relative">
-                    {/* Remove button */}
-                    {count > 1 && (
+                    {/* Remove button — owner only */}
+                    {isOwnerView && count > 1 && (
                       <button
                         onClick={() => remove(i)}
                         className="absolute -top-1 right-0 w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
