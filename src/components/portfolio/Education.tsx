@@ -100,8 +100,8 @@ export default function Education() {
                       <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                         style={{ background: `linear-gradient(90deg, transparent, ${accent}60, transparent)` }} />
 
-                      {/* Remove button — only for extras */}
-                      {!isDefault && (
+                      {/* Remove button — only for extras, owner only */}
+                      {isOwnerView && !isDefault && (
                         <button
                           onClick={() => remove(i)}
                           className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
