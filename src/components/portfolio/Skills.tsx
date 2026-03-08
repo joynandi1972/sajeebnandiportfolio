@@ -29,7 +29,7 @@ const skillGradients = [
 export default function Skills() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { get } = useEditMode();
+  const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("skill", 8);
 
   return (
@@ -62,8 +62,8 @@ export default function Skills() {
                     exit={{ opacity: 0, x: 20 }}
                     transition={{ duration: 0.55, delay: 0.15 + i * 0.1 }}
                     className="group relative">
-                    {/* Remove button */}
-                    {count > 1 && (
+                    {/* Remove button — owner only */}
+                    {isOwnerView && count > 1 && (
                       <button
                         onClick={() => remove(i)}
                         className="absolute -top-1 right-0 w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
@@ -113,15 +113,17 @@ export default function Skills() {
               })}
             </AnimatePresence>
 
-            {/* Add skill button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-              onClick={add}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
-              style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
-              <Plus className="w-4 h-4" />
-              Add Skill
-            </motion.button>
+            {/* Add skill button — owner only */}
+            {isOwnerView && (
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                onClick={add}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
+                style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
+                <Plus className="w-4 h-4" />
+                Add Skill
+              </motion.button>
+            )}
           </div>
 
           {/* Soft skills */}

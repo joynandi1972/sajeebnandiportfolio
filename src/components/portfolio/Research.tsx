@@ -10,7 +10,7 @@ const resIcons = [Microscope, Award, FlaskConical, Leaf, Microscope, Award];
 export default function Research() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { get } = useEditMode();
+  const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("res", 2);
   const interests = get("research.interests").split(",").map(t => t.trim()).filter(Boolean);
 
@@ -53,8 +53,8 @@ export default function Research() {
                   <motion.div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }} />
 
-                  {/* Remove button */}
-                  {count > 1 && (
+                  {/* Remove button — owner only */}
+                  {isOwnerView && count > 1 && (
                     <button
                       onClick={() => remove(i)}
                       className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
@@ -124,15 +124,17 @@ export default function Research() {
           </AnimatePresence>
         </div>
 
-        {/* Add button */}
-        <motion.button
-          whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-          onClick={add}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid mb-14"
-          style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
-          <Plus className="w-4 h-4" />
-          Add Research
-        </motion.button>
+        {/* Add button — owner only */}
+        {isOwnerView && (
+          <motion.button
+            whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+            onClick={add}
+            className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid mb-14"
+            style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
+            <Plus className="w-4 h-4" />
+            Add Research
+          </motion.button>
+        )}
 
         {/* Research Interests */}
         <motion.div
