@@ -1,13 +1,165 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Trophy, Star, Users } from "lucide-react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef, useState, useCallback } from "react";
+import { Trophy, Star, Users, Upload, X, ZoomIn, ImagePlus, Check } from "lucide-react";
 import { EditableText } from "./Editable";
+import { useEditMode } from "@/contexts/EditMode";
 
 const achIcons = [Trophy, Star, Users];
+const CERT_STORAGE_KEY = "sajeeb_achievement_certificates";
 
+function useCertificates() {
+  const [certs, setCerts] = useState<Record<number, string>>(() => {
+    try {
+      const saved = localStorage.getItem(CERT_STORAGE_KEY);
+      return saved ? JSON.parse(saved) : {};
+    } catch { return {}; }
+  });
+
+  const set = useCallback((index: number, dataUrl: string) => {
+    setCerts(prev => {
+      const next = { ...prev, [index]: dataUrl };
+      try { localStorage.setItem(CERT_STORAGE_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+  const remove = useCallback((index: number) => {
+    setCerts(prev => {
+      const next = { ...prev };
+      delete next[index];
+      try { localStorage.setItem(CERT_STORAGE_KEY, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+  return { certs, set, remove };
+}
+
+// ── Upload Button ─────────────────────────────────────────────────────────────
+function CertUpload({ index, onUpload }: { index: number; onUpload: (i: number, url: string) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const processFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const result = e.target?.result as string;
+      if (result) onUpload(index, result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div
+      className="relative mt-4 rounded-xl flex flex-col items-center justify-center gap-2 py-5 px-4 cursor-pointer transition-all duration-200"
+      style={{
+        border: `2px dashed ${dragOver ? "hsl(var(--primary))" : "hsl(var(--border))"}`,
+        background: dragOver ? "hsl(var(--primary-muted))" : "hsl(var(--muted) / 0.5)",
+      }}
+      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files?.[0]; if (f) processFile(f); }}
+      onClick={() => inputRef.current?.click()}
+    >
+      <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "hsl(var(--primary-muted))" }}>
+        <ImagePlus className="w-4 h-4 text-primary" />
+      </div>
+      <div className="text-center">
+        <p className="text-xs font-semibold text-foreground">Upload Certificate</p>
+        <p className="text-xs text-muted-foreground mt-0.5">Click or drag & drop</p>
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" className="hidden"
+        onChange={e => { const f = e.target.files?.[0]; if (f) processFile(f); }} />
+    </div>
+  );
+}
+
+// ── Certificate Lightbox ──────────────────────────────────────────────────────
+function CertLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[120] flex items-center justify-center p-4"
+      style={{ background: "hsl(155 50% 5% / 0.9)", backdropFilter: "blur(20px)" }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.85, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.85, opacity: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 28 }}
+        className="relative max-w-3xl w-full rounded-2xl overflow-hidden"
+        style={{ boxShadow: "0 40px 100px hsl(155 50% 5% / 0.6)" }}
+        onClick={e => e.stopPropagation()}
+      >
+        <img src={src} alt="Certificate" className="w-full h-auto max-h-[85vh] object-contain" style={{ background: "hsl(var(--card))" }} />
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all hover:scale-110"
+          style={{ background: "hsl(0 55% 30% / 0.85)", color: "hsl(0 0% 97%)" }}
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Certificate Thumbnail ─────────────────────────────────────────────────────
+function CertThumbnail({ src, onView, onRemove }: { src: string; onView: () => void; onRemove: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="relative mt-4 rounded-xl overflow-hidden group cursor-pointer"
+      style={{ border: "1px solid hsl(var(--primary) / 0.3)" }}
+      onClick={onView}
+    >
+      <img src={src} alt="Certificate" className="w-full h-32 object-cover transition-transform duration-300 group-hover:scale-105" />
+      {/* Overlay */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+        style={{ background: "hsl(155 50% 5% / 0.55)" }}>
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+          style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
+          <ZoomIn className="w-3.5 h-3.5" />
+          View Certificate
+        </div>
+      </div>
+      {/* Remove button */}
+      <button
+        onClick={e => { e.stopPropagation(); onRemove(); }}
+        className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110"
+        style={{ background: "hsl(0 55% 30% / 0.85)", color: "hsl(0 0% 97%)" }}
+      >
+        <X className="w-3.5 h-3.5" />
+      </button>
+      {/* Badge */}
+      <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-xs font-semibold flex items-center gap-1"
+        style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))" }}>
+        <Check className="w-3 h-3" />
+        Certificate
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Main Component ────────────────────────────────────────────────────────────
 export default function Achievements() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { isEditing } = useEditMode();
+  const { certs, set: setCert, remove: removeCert } = useCertificates();
+  const [lightbox, setLightbox] = useState<number | null>(null);
+  const [toast, setToast] = useState(false);
+
+  const handleUpload = useCallback((i: number, url: string) => {
+    setCert(i, url);
+    setToast(true);
+    setTimeout(() => setToast(false), 2500);
+  }, [setCert]);
 
   return (
     <section id="achievements" className="section-padding relative overflow-hidden" style={{ background: "hsl(var(--secondary))" }}>
@@ -26,10 +178,27 @@ export default function Achievements() {
           />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">Recognition earned through dedication to research, leadership, and community service</p>
         </motion.div>
+
+        {/* Upload toast */}
+        <AnimatePresence>
+          {toast && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium mb-6 w-fit mx-auto"
+              style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))", border: "1px solid hsl(var(--primary) / 0.2)" }}
+            >
+              <Check className="w-4 h-4" />
+              Certificate uploaded successfully!
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[0, 1, 2].map(i => {
             const Icon = achIcons[i];
             const highlight = i === 0;
+            const cert = certs[i];
+
             return (
               <motion.div
                 key={i}
@@ -37,7 +206,7 @@ export default function Achievements() {
                 animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.55, delay: 0.15 + i * 0.14, type: "spring", stiffness: 150 }}
                 whileHover={{ y: -8, scale: 1.02 }}
-                className="relative p-7 rounded-2xl border transition-all duration-300 group overflow-hidden"
+                className="relative p-7 rounded-2xl border transition-all duration-300 group overflow-hidden flex flex-col"
                 style={{
                   background: highlight
                     ? "linear-gradient(145deg, hsl(var(--card)), hsl(var(--primary-muted)))"
@@ -48,6 +217,7 @@ export default function Achievements() {
                 {/* Hover glow */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
                   style={{ background: `radial-gradient(circle at 30% 30%, hsl(155 40% 80% / ${highlight ? "0.1" : "0.06"}), transparent 60%)` }} />
+
                 {/* Featured badge */}
                 {highlight && (
                   <motion.div
@@ -58,6 +228,7 @@ export default function Achievements() {
                     ⭐ Featured
                   </motion.div>
                 )}
+
                 <motion.div
                   whileHover={{ scale: 1.15, rotate: highlight ? 10 : -5 }}
                   transition={{ type: "spring", stiffness: 300 }}
@@ -65,10 +236,12 @@ export default function Achievements() {
                   style={{ background: "hsl(var(--primary-muted))" }}>
                   <Icon className="w-6 h-6 text-primary" />
                 </motion.div>
+
                 <span className="inline-block px-2.5 py-0.5 rounded text-xs font-medium mb-3"
                   style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}>
                   <EditableText contentKey={`ach.${i}.year`} className="text-xs" />
                 </span>
+
                 <h3 className="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-primary transition-colors">
                   <EditableText contentKey={`ach.${i}.title`} className="font-display font-semibold text-lg" />
                 </h3>
@@ -78,11 +251,31 @@ export default function Achievements() {
                 <p className="text-sm text-foreground/70 leading-relaxed">
                   <EditableText contentKey={`ach.${i}.description`} multiline rows={3} className="text-sm leading-relaxed" />
                 </p>
+
+                {/* Certificate section */}
+                <div className="mt-auto pt-2">
+                  {cert ? (
+                    <CertThumbnail
+                      src={cert}
+                      onView={() => setLightbox(i)}
+                      onRemove={() => removeCert(i)}
+                    />
+                  ) : (
+                    <CertUpload index={i} onUpload={handleUpload} />
+                  )}
+                </div>
               </motion.div>
             );
           })}
         </div>
       </div>
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightbox !== null && certs[lightbox] && (
+          <CertLightbox src={certs[lightbox]} onClose={() => setLightbox(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
