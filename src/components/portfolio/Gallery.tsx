@@ -297,17 +297,29 @@ export default function Gallery() {
   }, [remove, lightboxIndex, closeLightbox]);
 
   return (
-    <section id="gallery" className="section-padding bg-background">
+    <section id="gallery" className="section-padding bg-background relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
       <div className="container-max" ref={ref}>
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="text-center mb-12"
         >
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4 }}>
+            Photo Gallery
+          </motion.span>
           <h2 className="section-title">Gallery</h2>
-          <div className="section-divider mx-auto" />
+          <motion.div
+            initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 1.5rem" }}
+          />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">
             A visual journey through fieldwork, research milestones, and impactful events
           </p>
