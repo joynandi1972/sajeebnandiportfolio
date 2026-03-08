@@ -42,11 +42,11 @@ export default function Contact() {
     }`;
 
   return (
-    <section id="contact" className="section-padding bg-background relative overflow-hidden">
+    <section id="contact" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 100%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute bottom-0 left-0 w-96 h-96 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 20% 100%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(60px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
