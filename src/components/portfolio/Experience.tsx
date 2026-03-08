@@ -22,18 +22,26 @@ export default function Experience() {
 
   return (
     <section id="experience" className="section-padding bg-background relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
       <div className="absolute top-1/3 right-0 w-80 h-80 pointer-events-none"
         style={{ background: "radial-gradient(circle at 90% 50%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }} className="text-center mb-14">
+          transition={{ duration: 0.6 }} className="text-center mb-16">
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4 }}>
+            Work History
+          </motion.span>
           <h2 className="section-title">Experience</h2>
           <motion.div
             initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 1.5rem" }}
           />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">A journey through research, leadership, and social impact</p>
         </motion.div>
