@@ -94,27 +94,28 @@ export const DEFAULT_CONTENT: Record<string, string> = {
 
   // Research – Marigold
   "res.0.title": "Plant Growth Regulators & Floral Traits of Marigold",
-  "res.0.subtitle": "Undergraduate Research Project — Botany",
+  "res.0.subtitle": "Research Project (Botany)",
   "res.0.period": "Jan 2025 – Aug 2025",
   "res.0.badge": "Botany Research",
   "res.0.description":
-    "Investigated the effects of plant growth regulators on the floral traits and development of Tagetes erecta (African Marigold). Conducted systematic fieldwork, morphological measurements, and statistical analysis to derive insights into PGR-mediated growth responses.",
-  "res.0.point0": "Designed and executed field experiments with controlled PGR treatments",
-  "res.0.point1": "Collected morphological and phenological data over the growing season",
-  "res.0.point2": "Performed statistical analysis and prepared comprehensive research documentation",
+    "Executed an undergraduate research study on plant growth regulators and their impact on growth and floral traits of marigold (Tagetes erecta).",
+  "res.0.point0": "Performed fieldwork, data collection, statistical analysis, and research documentation.",
+  "res.0.point1": "",
+  "res.0.point2": "",
+  "res.0.point3": "",
   "res.0.tags": "Plant Biology,Tagetes Erecta,Field Research,Statistical Analysis",
 
   // Research – Vertical Farming
-  "res.1.title": "Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas",
-  "res.1.subtitle": "International Poster Presentation Competition",
+  "res.1.title": "Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas of Bangladesh",
+  "res.1.subtitle": "Research Team Member — International Poster Presentation Competition",
   "res.1.period": "Jul 2025 – Oct 2025",
   "res.1.badge": "🥈 Silver Innovator Award",
   "res.1.description":
-    "Co-authored and presented research on hydroponic and aeroponic vertical farming as a solution to urban food security challenges in Bangladesh. The research received the prestigious Silver Innovator Award at the international competition.",
-  "res.1.point0": "Co-authored research on vertical farming for urban Bangladesh context",
-  "res.1.point1": "Developed research poster and presentation for international audience",
-  "res.1.point2": "Explored hydroponics, aeroponics, and nutrient film technique (NFT) systems",
-  "res.1.point3": "Received Silver Innovator Award at the international competition",
+    "Co-authored and presented a research study titled \"Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas of Bangladesh\".",
+  "res.1.point0": "Awarded Silver Innovator Award for research quality, innovation, and presentation.",
+  "res.1.point1": "",
+  "res.1.point2": "",
+  "res.1.point3": "",
   "res.1.tags": "Vertical Farming,Hydroponics,Urban Agriculture,Sustainability",
 
   // Skills
