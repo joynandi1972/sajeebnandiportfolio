@@ -57,17 +57,15 @@ export default function Footer() {
             </h4>
             <div className="grid grid-cols-2 gap-y-2 gap-x-4">
               {navLinks.map((link) => (
-                <motion.button
+                <button
                   key={link.id}
                   onClick={() => scrollTo(link.id)}
-                  className="text-left text-sm transition-colors"
-                  style={{ color: "hsl(155 12% 65%)" }}
-                  whileHover={{ x: 4 } as object}
+                  className="text-left text-sm transition-colors hover:translate-x-1"
                   style={{ color: "hsl(155 12% 65%)" }}
                   onMouseEnter={e => (e.currentTarget.style.color = "hsl(155 55% 70%)")}
                   onMouseLeave={e => (e.currentTarget.style.color = "hsl(155 12% 65%)")}>
                   {link.label}
-                </motion.button>
+                </button>
               ))}
             </div>
           </div>
