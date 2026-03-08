@@ -8,9 +8,7 @@ export default {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       fontFamily: {
@@ -29,6 +27,7 @@ export default {
           light: "hsl(var(--primary-light))",
           glow: "hsl(var(--primary-glow))",
           muted: "hsl(var(--primary-muted))",
+          subtle: "hsl(var(--primary-subtle))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -53,6 +52,11 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          light: "hsl(var(--gold-light))",
+          muted: "hsl(var(--gold-muted))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
@@ -103,6 +107,10 @@ export default {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "glow-pulse": {
+          "0%, 100%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -113,15 +121,24 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         float: "float 4s ease-in-out infinite",
         shimmer: "shimmer 2.5s linear infinite",
+        "glow-pulse": "glow-pulse 2.5s ease-in-out infinite",
       },
       backgroundImage: {
         "gradient-hero": "var(--gradient-hero)",
         "gradient-subtle": "var(--gradient-subtle)",
         "gradient-card": "var(--gradient-card)",
+        "gradient-dark": "var(--gradient-dark-band)",
       },
       boxShadow: {
         green: "var(--shadow-green)",
-        "card-hover": "0 12px 40px -8px hsl(155 30% 15% / 0.15)",
+        card: "var(--shadow-card)",
+        "card-hover": "var(--shadow-card-hover)",
+        "glow-green": "var(--shadow-glow-green)",
+        xs: "var(--shadow-xs)",
+        sm2: "var(--shadow-sm)",
+        md2: "var(--shadow-md)",
+        lg2: "var(--shadow-lg)",
+        xl2: "var(--shadow-xl)",
       },
     },
   },
