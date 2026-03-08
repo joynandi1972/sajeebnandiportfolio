@@ -113,15 +113,17 @@ export default function Skills() {
               })}
             </AnimatePresence>
 
-            {/* Add skill button */}
-            <motion.button
-              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-              onClick={add}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
-              style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
-              <Plus className="w-4 h-4" />
-              Add Skill
-            </motion.button>
+            {/* Add skill button — owner only */}
+            {isOwnerView && (
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+                onClick={add}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
+                style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
+                <Plus className="w-4 h-4" />
+                Add Skill
+              </motion.button>
+            )}
           </div>
 
           {/* Soft skills */}
