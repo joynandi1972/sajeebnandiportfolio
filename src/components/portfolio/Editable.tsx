@@ -23,7 +23,7 @@ export function EditableText({
   const value = get(contentKey);
 
   if (!isEditing) {
-    return <Tag className={className}>{value}</Tag>;
+    return <Tag className={className} style={style}>{value}</Tag>;
   }
 
   const editClass =
