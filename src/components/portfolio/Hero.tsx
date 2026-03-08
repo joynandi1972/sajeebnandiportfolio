@@ -286,12 +286,14 @@ export default function Hero() {
                 View Research
               </motion.button>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* Profile Photo with 3D tilt */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
+            variants={!isMobile ? desktopScaleVariants : undefined}
+            initial={!isMobile ? "hidden" : { opacity: 0, scale: 0.85 }}
+            animate={!isMobile ? "visible" : { opacity: 1, scale: 1 }}
+            transition={isMobile ? { delay: 0.3, duration: 0.7, ease: "easeOut" } : undefined}
             className="order-1 lg:order-2 flex flex-col items-center lg:items-end gap-4"
             onMouseMove={handleMouseMove}
             onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}>
