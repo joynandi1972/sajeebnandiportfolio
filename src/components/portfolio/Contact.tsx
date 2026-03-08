@@ -27,7 +27,7 @@ export default function Contact() {
     setTimeout(() => setSent(false), 4000);
   };
 
-  const contactRows = [
+  const contactRows: Array<{ label: string; key: string; prefix?: string; isHttp?: boolean; icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; color: string; bg: string }> = [
     { label: "Email", key: "hero.email", prefix: "mailto:", ...contactIconColors[0] },
     { label: "Phone", key: "hero.phone", prefix: "tel:", ...contactIconColors[1] },
     { label: "LinkedIn", key: "hero.linkedin", isHttp: true, ...contactIconColors[2] },
