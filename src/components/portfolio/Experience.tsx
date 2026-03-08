@@ -73,12 +73,14 @@ export default function Experience() {
                     transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
                   />
                   <motion.div
-                    whileHover={{ y: -4, boxShadow: "0 16px 40px -8px hsl(155 40% 20% / 0.15)" }}
-                    className="p-6 rounded-xl bg-card border border-border transition-all duration-300 group relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
-                      style={{ background: "linear-gradient(135deg, hsl(155 40% 96% / 0.5) 0%, transparent 50%)" }} />
-                    <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{ background: expColors[i % expColors.length] }} />
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.25 }}
+                    className="p-6 rounded-2xl bg-card border border-border transition-all duration-300 group relative overflow-hidden shine-on-hover"
+                    style={{ boxShadow: "var(--shadow-card)" }}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
+                      style={{ background: "radial-gradient(circle at 10% 50%, hsl(155 40% 85% / 0.07), transparent 65%)" }} />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+                      style={{ background: `linear-gradient(180deg, ${expColors[i % expColors.length]}, hsl(var(--primary-muted)))` }} />
 
                     {/* Remove button — owner only */}
                     {isOwnerView && count > 1 && (
