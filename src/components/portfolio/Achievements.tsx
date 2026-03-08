@@ -1,11 +1,20 @@
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState, useCallback } from "react";
-import { Trophy, Star, Users, Upload, X, ZoomIn, ImagePlus, Check, Plus, Trash2, Award, Medal } from "lucide-react";
+import { Trophy, Star, Users, X, ZoomIn, ImagePlus, Check, Plus, Trash2, Award, Medal } from "lucide-react";
 import { EditableText } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
 import { useDynamicSection } from "@/hooks/useDynamicSection";
 
 const achIcons = [Trophy, Star, Users, Award, Medal, Trophy, Star];
+const achColors = [
+  { color: "hsl(45 85% 52%)", bg: "hsl(45 80% 90%)", glow: "hsl(45 85% 52% / 0.2)" },
+  { color: "hsl(220 70% 55%)", bg: "hsl(220 70% 92%)", glow: "hsl(220 70% 55% / 0.2)" },
+  { color: "hsl(155 50% 30%)", bg: "hsl(155 40% 88%)", glow: "hsl(155 50% 30% / 0.2)" },
+  { color: "hsl(280 55% 50%)", bg: "hsl(280 50% 92%)", glow: "hsl(280 55% 50% / 0.2)" },
+  { color: "hsl(15 80% 52%)", bg: "hsl(15 80% 91%)", glow: "hsl(15 80% 52% / 0.2)" },
+  { color: "hsl(45 85% 52%)", bg: "hsl(45 80% 90%)", glow: "hsl(45 85% 52% / 0.2)" },
+  { color: "hsl(220 70% 55%)", bg: "hsl(220 70% 92%)", glow: "hsl(220 70% 55% / 0.2)" },
+];
 const CERT_STORAGE_KEY = "sajeeb_achievement_certificates";
 
 function useCertificates() {
@@ -141,18 +150,26 @@ export default function Achievements() {
 
   return (
     <section id="achievements" className="section-padding relative overflow-hidden" style={{ background: "hsl(var(--secondary))" }}>
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(155 40% 60% / 0.06), transparent 60%)" }} />
+        style={{ background: "radial-gradient(ellipse at 50% 0%, hsl(155 40% 60% / 0.07), transparent 60%)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }} className="text-center mb-14">
+          transition={{ duration: 0.6 }} className="text-center mb-16">
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4 }}>
+            Recognition
+          </motion.span>
           <h2 className="section-title">Achievements</h2>
           <motion.div
             initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 1.5rem" }}
           />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">Recognition earned through dedication to research, leadership, and community service</p>
         </motion.div>
@@ -173,6 +190,7 @@ export default function Achievements() {
             {Array.from({ length: count }, (_, i) => {
               const Icon = achIcons[i % achIcons.length];
               const cert = certs[i];
+              const { color, bg, glow } = achColors[i % achColors.length];
               return (
                 <motion.div
                   key={i}
@@ -180,20 +198,24 @@ export default function Achievements() {
                   animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.55, delay: 0.15 + i * 0.1, type: "spring", stiffness: 150 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="relative p-7 rounded-2xl border transition-all duration-300 group overflow-hidden flex flex-col"
+                  whileHover={{ y: -8 }}
+                  className="relative p-7 rounded-2xl border transition-all duration-300 group overflow-hidden flex flex-col shine-on-hover"
                   style={{
                     background: "hsl(var(--card))",
                     borderColor: "hsl(var(--border))",
+                    boxShadow: "var(--shadow-card)",
                   }}>
+                  {/* Top accent bar */}
+                  <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
+                    style={{ background: `linear-gradient(90deg, ${color}80, ${color}30, transparent)` }} />
+                  {/* Hover bg glow */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
-                    style={{ background: "radial-gradient(circle at 30% 30%, hsl(155 40% 80% / 0.06), transparent 60%)" }} />
+                    style={{ background: `radial-gradient(circle at 30% 20%, ${glow}, transparent 60%)` }} />
 
-                  {/* Remove button — owner only */}
                   {isOwnerView && count > 1 && (
                     <button
                       onClick={() => remove(i)}
-                      className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
+                      className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
                       style={{ background: "hsl(0 55% 35% / 0.12)", color: "hsl(0 55% 40%)" }}
                       title="Remove">
                       <Trash2 className="w-3.5 h-3.5" />
@@ -204,21 +226,21 @@ export default function Achievements() {
                     whileHover={{ scale: 1.15, rotate: -5 }}
                     transition={{ type: "spring", stiffness: 300 }}
                     className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
-                    style={{ background: "hsl(var(--primary-muted))" }}>
-                    <Icon className="w-6 h-6 text-primary" />
+                    style={{ background: bg, boxShadow: `0 4px 16px ${glow}` }}>
+                    <Icon className="w-6 h-6" style={{ color }} />
                   </motion.div>
 
-                  <span className="inline-block px-2.5 py-0.5 rounded text-xs font-medium mb-3"
-                    style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}>
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold mb-3 w-fit"
+                    style={{ background: bg, color }}>
                     <EditableText contentKey={`ach.${i}.year`} className="text-xs" placeholder="Year" />
                   </span>
                   <h3 className="font-display font-semibold text-lg text-foreground mb-1 group-hover:text-primary transition-colors">
                     <EditableText contentKey={`ach.${i}.title`} className="font-display font-semibold text-lg" placeholder="Achievement Title" />
                   </h3>
-                  <p className="text-xs font-medium text-primary mb-3">
-                    <EditableText contentKey={`ach.${i}.org`} className="text-xs font-medium" placeholder="Issuing Organisation" />
+                  <p className="text-xs font-semibold mb-3" style={{ color }}>
+                    <EditableText contentKey={`ach.${i}.org`} className="text-xs font-semibold" placeholder="Issuing Organisation" />
                   </p>
-                  <p className="text-sm text-foreground/70 leading-relaxed text-justify">
+                  <p className="text-sm text-foreground/70 leading-relaxed text-justify flex-1">
                     <EditableText contentKey={`ach.${i}.description`} multiline rows={3} className="text-sm leading-relaxed text-justify" placeholder="Describe this achievement..." />
                   </p>
 
@@ -235,7 +257,6 @@ export default function Achievements() {
           </AnimatePresence>
         </div>
 
-        {/* Add achievement button — owner only */}
         {isOwnerView && (
           <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
