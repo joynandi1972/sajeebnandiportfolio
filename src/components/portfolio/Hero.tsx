@@ -1,11 +1,69 @@
-import { motion } from "framer-motion";
-import { MapPin, Mail, Phone, Linkedin, ChevronDown, Download } from "lucide-react";
+import { useState, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Mail, Linkedin, ChevronDown, Camera, Upload, X, Check } from "lucide-react";
 import profileImg from "@/assets/profile.png";
 
+const STORAGE_KEY = "sajeeb_portfolio_profile_photo";
+
+function useProfilePhoto() {
+  const [photo, setPhoto] = useState<string | null>(() => {
+    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
+  });
+
+  const save = useCallback((dataUrl: string) => {
+    setPhoto(dataUrl);
+    try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch { /* quota exceeded */ }
+  }, []);
+
+  const remove = useCallback(() => {
+    setPhoto(null);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  }, []);
+
+  return { photo, save, remove };
+}
+
 export default function Hero() {
-  const scrollToAbout = () => {
-    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+  const { photo, save, remove } = useProfilePhoto();
+  const [hovering, setHovering] = useState(false);
+  const [toast, setToast] = useState<"saved" | "removed" | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const processFile = useCallback((file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      save(result);
+      setToast("saved");
+      setTimeout(() => setToast(null), 3000);
+    };
+    reader.readAsDataURL(file);
+  }, [save]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+    e.target.value = "";
   };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
+  };
+
+  const handleRemove = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    remove();
+    setToast("removed");
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const scrollToAbout = () =>
+    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
 
   return (
     <section
@@ -15,19 +73,32 @@ export default function Hero() {
       {/* Background botanical pattern */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, hsl(155 60% 60%), transparent 70%)" }}
-        />
+          style={{ background: "radial-gradient(circle, hsl(155 60% 60%), transparent 70%)" }} />
         <div className="absolute bottom-12 -left-16 w-72 h-72 rounded-full opacity-8"
-          style={{ background: "radial-gradient(circle, hsl(155 50% 50%), transparent 70%)" }}
-        />
-        {/* Subtle grid */}
+          style={{ background: "radial-gradient(circle, hsl(155 50% 50%), transparent 70%)" }} />
         <div className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)",
-            backgroundSize: "32px 32px"
-          }}
-        />
+          style={{ backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       </div>
+
+      {/* Upload toast */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -20, x: "-50%" }}
+            className="fixed top-20 left-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium shadow-lg"
+            style={{
+              background: toast === "saved" ? "hsl(155 50% 20%)" : "hsl(0 60% 30%)",
+              color: "hsl(0 0% 97%)",
+              border: "1px solid hsl(155 40% 35% / 0.5)",
+            }}
+          >
+            <Check className="w-4 h-4" />
+            {toast === "saved" ? "Photo saved successfully!" : "Photo removed — using default."}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="container-max w-full section-padding py-28 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -125,49 +196,96 @@ export default function Hero() {
               <button
                 onClick={() => document.getElementById("research")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 hover:scale-105"
-                style={{
-                  background: "transparent",
-                  color: "hsl(155 40% 80%)",
-                  border: "1px solid hsl(155 35% 45% / 0.6)",
-                }}
+                style={{ background: "transparent", color: "hsl(155 40% 80%)", border: "1px solid hsl(155 35% 45% / 0.6)" }}
               >
                 View Research
               </button>
             </motion.div>
           </div>
 
-          {/* Profile Image */}
+          {/* Profile Image — click or drag to upload */}
           <motion.div
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
-            className="order-1 lg:order-2 flex justify-center lg:justify-end"
+            className="order-1 lg:order-2 flex flex-col items-center lg:items-end gap-4"
           >
             <div className="relative">
               {/* Decorative rings */}
+              <div className="absolute inset-0 rounded-full scale-110 opacity-20"
+                style={{ border: "2px solid hsl(155 50% 55%)" }} />
+              <div className="absolute inset-0 rounded-full scale-125 opacity-10"
+                style={{ border: "1px solid hsl(155 50% 55%)" }} />
+
+              {/* Clickable / droppable photo area */}
               <div
-                className="absolute inset-0 rounded-full scale-110 opacity-20"
-                style={{ border: "2px solid hsl(155 50% 55%)" }}
-              />
-              <div
-                className="absolute inset-0 rounded-full scale-125 opacity-10"
-                style={{ border: "1px solid hsl(155 50% 55%)" }}
-              />
-              {/* Photo container */}
-              <div
-                className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden animate-float"
+                className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden animate-float cursor-pointer group"
                 style={{
-                  border: "4px solid hsl(155 45% 45% / 0.5)",
+                  border: dragOver
+                    ? "4px solid hsl(155 60% 55%)"
+                    : "4px solid hsl(155 45% 45% / 0.5)",
                   boxShadow: "0 20px 60px -10px hsl(155 50% 10% / 0.5), 0 0 40px hsl(155 50% 30% / 0.2)",
+                  transition: "border-color 0.2s",
                 }}
+                onMouseEnter={() => setHovering(true)}
+                onMouseLeave={() => setHovering(false)}
+                onClick={() => inputRef.current?.click()}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleDrop}
               >
                 <img
-                  src={profileImg}
+                  src={photo || profileImg}
                   alt="Sajeeb Nandi — Botany Researcher"
-                  className="w-full h-full object-cover"
-                  style={{ background: "hsl(155 20% 85%)" }}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+
+                {/* Hover overlay */}
+                <AnimatePresence>
+                  {(hovering || dragOver) && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
+                      style={{ background: "hsl(155 50% 8% / 0.75)", backdropFilter: "blur(4px)" }}
+                    >
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                        style={{ background: "hsl(155 50% 55% / 0.2)", border: "1.5px solid hsl(155 50% 55% / 0.5)" }}>
+                        <Camera className="w-6 h-6" style={{ color: "hsl(155 55% 70%)" }} />
+                      </div>
+                      <p className="text-xs font-semibold text-center px-6 leading-tight"
+                        style={{ color: "hsl(155 40% 82%)" }}>
+                        {dragOver ? "Drop to upload" : "Click or drag to\nupload your photo"}
+                      </p>
+                      <p className="text-xs" style={{ color: "hsl(155 20% 60%)" }}>JPG, PNG, WEBP</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
+
+              {/* Remove button — only shown when custom photo is set */}
+              <AnimatePresence>
+                {photo && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.7 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.7 }}
+                    onClick={handleRemove}
+                    title="Remove custom photo"
+                    className="absolute top-1 right-1 sm:top-2 sm:right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all duration-200 hover:scale-110"
+                    style={{
+                      background: "hsl(0 55% 30%)",
+                      border: "1.5px solid hsl(0 50% 45% / 0.6)",
+                      color: "hsl(0 0% 95%)",
+                    }}
+                  >
+                    <X className="w-4 h-4" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
               {/* Badge */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -184,6 +302,32 @@ export default function Hero() {
                 🌿 Plant Scientist
               </motion.div>
             </div>
+
+            {/* Upload hint pill */}
+            <motion.button
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1, duration: 0.5 }}
+              onClick={() => inputRef.current?.click()}
+              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
+              style={{
+                background: "hsl(155 35% 22% / 0.7)",
+                color: "hsl(155 45% 72%)",
+                border: "1px dashed hsl(155 35% 42% / 0.5)",
+              }}
+            >
+              <Upload className="w-3 h-3" />
+              {photo ? "Change photo" : "Upload your photo"}
+            </motion.button>
+
+            {/* Hidden file input */}
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className="hidden"
+              onChange={handleFileChange}
+            />
           </motion.div>
         </div>
       </div>
