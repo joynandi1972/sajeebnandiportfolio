@@ -18,11 +18,11 @@ export const DEFAULT_CONTENT: Record<string, string> = {
   // About
   "about.title": "About Me",
   "about.para1":
-    "I'm Sajeeb Nandi, a Botany undergraduate at the University of Barishal, Bangladesh. My academic journey has taken me from the laboratory to international research stages, driven by a deep curiosity about plant science and sustainable agriculture.",
+    "Botany undergraduate with hands-on experience in academic research, international research presentation, leadership fellowships, and administrative internships. Currently working as an Admin & HR Intern at the YSSE Social Responsibility Wing, supporting organizational operations and social impact initiatives.",
   "about.para2":
-    "Currently serving as an Admin & HR Intern at the YSSE Social Responsibility Wing, I support organizational operations and social impact initiatives. As a selected OMLAS Fellow, I received training in governance frameworks, public policy analysis, and sustainability — collaborating with an international cohort of emerging leaders.",
+    "Selected OMLAS Fellow with exposure to public policy, sustainability, and leadership development. Completed structured training in governance frameworks, public policy analysis, and sustainable development and leadership skills.",
   "about.para3":
-    "My research focuses on plant growth regulators, floral biology, and vertical farming for urban food security. I am a strong team player with a passion for bridging research, coordination, and communication to create real-world environmental impact.",
+    "Strong team player with research, coordination, and communication skills.",
   "about.tags": "Plant Science,Sustainable Agriculture,Vertical Farming,Leadership,Data Analysis",
 
   // Education — BSc
