@@ -22,18 +22,26 @@ export default function Experience() {
 
   return (
     <section id="experience" className="section-padding bg-background relative overflow-hidden">
+      <div className="absolute top-0 left-0 right-0 h-px"
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
       <div className="absolute top-1/3 right-0 w-80 h-80 pointer-events-none"
         style={{ background: "radial-gradient(circle at 90% 50%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }} className="text-center mb-14">
+          transition={{ duration: 0.6 }} className="text-center mb-16">
+          <motion.span
+            className="section-label"
+            initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.4 }}>
+            Work History
+          </motion.span>
           <h2 className="section-title">Experience</h2>
           <motion.div
             initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 1.5rem" }}
           />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">A journey through research, leadership, and social impact</p>
         </motion.div>
@@ -65,12 +73,14 @@ export default function Experience() {
                     transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
                   />
                   <motion.div
-                    whileHover={{ y: -4, boxShadow: "0 16px 40px -8px hsl(155 40% 20% / 0.15)" }}
-                    className="p-6 rounded-xl bg-card border border-border transition-all duration-300 group relative overflow-hidden">
-                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
-                      style={{ background: "linear-gradient(135deg, hsl(155 40% 96% / 0.5) 0%, transparent 50%)" }} />
-                    <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{ background: expColors[i % expColors.length] }} />
+                    whileHover={{ y: -5 }}
+                    transition={{ duration: 0.25 }}
+                    className="p-6 rounded-2xl bg-card border border-border transition-all duration-300 group relative overflow-hidden shine-on-hover"
+                    style={{ boxShadow: "var(--shadow-card)" }}>
+                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
+                      style={{ background: "radial-gradient(circle at 10% 50%, hsl(155 40% 85% / 0.07), transparent 65%)" }} />
+                    <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
+                      style={{ background: `linear-gradient(180deg, ${expColors[i % expColors.length]}, hsl(var(--primary-muted)))` }} />
 
                     {/* Remove button — owner only */}
                     {isOwnerView && count > 1 && (

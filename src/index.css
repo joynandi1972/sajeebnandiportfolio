@@ -46,15 +46,18 @@
     --radius: 0.75rem;
 
     /* Hero gradient */
-    --gradient-hero: linear-gradient(135deg, hsl(155 50% 14%) 0%, hsl(165 45% 22%) 50%, hsl(155 40% 28%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(155 55% 10%) 0%, hsl(165 50% 18%) 40%, hsl(155 45% 24%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(155 15% 96%) 0%, hsl(0 0% 100%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(155 15% 97%) 100%);
+    --gradient-section-alt: linear-gradient(160deg, hsl(155 18% 95%) 0%, hsl(155 12% 97%) 100%);
 
     /* Shadows */
     --shadow-sm: 0 1px 3px 0 hsl(155 30% 15% / 0.08), 0 1px 2px -1px hsl(155 30% 15% / 0.08);
     --shadow-md: 0 4px 6px -1px hsl(155 30% 15% / 0.08), 0 2px 4px -2px hsl(155 30% 15% / 0.08);
     --shadow-lg: 0 10px 30px -5px hsl(155 30% 15% / 0.12), 0 4px 6px -2px hsl(155 30% 15% / 0.06);
     --shadow-green: 0 8px 25px -5px hsl(155 50% 20% / 0.25);
+    --shadow-card: 0 2px 12px -2px hsl(155 30% 15% / 0.08), 0 1px 3px -1px hsl(155 30% 15% / 0.06);
+    --shadow-card-hover: 0 20px 50px -10px hsl(155 40% 20% / 0.18), 0 6px 15px -4px hsl(155 30% 15% / 0.1);
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 160 20% 10%;
@@ -86,6 +89,8 @@
     --border: 160 15% 18%;
     --input: 160 15% 18%;
     --ring: 155 45% 55%;
+    --shadow-card: 0 2px 12px -2px hsl(0 0% 0% / 0.25), 0 1px 3px -1px hsl(0 0% 0% / 0.2);
+    --shadow-card-hover: 0 20px 50px -10px hsl(0 0% 0% / 0.4), 0 6px 15px -4px hsl(155 30% 15% / 0.2);
     --sidebar-background: 160 25% 6%;
     --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 155 45% 55%;
@@ -142,8 +147,12 @@
     box-shadow: var(--shadow-green);
   }
 
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
   .section-padding {
-    @apply py-20 px-4 sm:px-6 lg:px-8;
+    @apply py-24 px-4 sm:px-6 lg:px-8;
   }
 
   .container-max {
@@ -158,6 +167,33 @@
   .section-divider {
     @apply w-16 h-1 bg-primary rounded-full mb-8;
     background: hsl(var(--primary));
+  }
+
+  /* Section header pill label */
+  .section-label {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest mb-4;
+    background: hsl(var(--primary-muted));
+    color: hsl(var(--primary));
+    border: 1px solid hsl(var(--primary) / 0.2);
+  }
+
+  /* Glass card effect */
+  .glass-card {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: hsl(var(--card) / 0.85);
+    border: 1px solid hsl(var(--border) / 0.7);
+  }
+
+  /* Elevated card */
+  .card-elevated {
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+  }
+
+  .card-elevated:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-4px);
   }
 
   /* Timeline styles */
@@ -188,6 +224,42 @@
   .nav-link.active::after {
     @apply w-full;
   }
+
+  /* Gradient text */
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Shine sweep effect on hover */
+  .shine-on-hover {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine-on-hover::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -75%;
+    width: 50%;
+    height: 200%;
+    background: linear-gradient(
+      to right,
+      transparent,
+      hsl(0 0% 100% / 0.08),
+      transparent
+    );
+    transform: skewX(-20deg);
+    transition: left 0.5s ease;
+    pointer-events: none;
+  }
+
+  .shine-on-hover:hover::after {
+    left: 125%;
+  }
 }
 
 /* Keyframes for custom animations */
@@ -211,6 +283,11 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
@@ -221,6 +298,10 @@
 
 .animate-scale-in {
   animation: scaleIn 0.4s ease-out forwards;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
 /* Content protection for visitors */
