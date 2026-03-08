@@ -2,6 +2,8 @@ import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, Mail, Linkedin, ChevronDown, Camera, Upload, X, Check } from "lucide-react";
 import profileImg from "@/assets/profile.png";
+import { EditableText } from "./Editable";
+import { useEditMode } from "@/contexts/EditMode";
 
 const STORAGE_KEY = "sajeeb_portfolio_profile_photo";
 
@@ -9,22 +11,20 @@ function useProfilePhoto() {
   const [photo, setPhoto] = useState<string | null>(() => {
     try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
   });
-
   const save = useCallback((dataUrl: string) => {
     setPhoto(dataUrl);
-    try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch { /* quota exceeded */ }
+    try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch {}
   }, []);
-
   const remove = useCallback(() => {
     setPhoto(null);
-    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
   }, []);
-
   return { photo, save, remove };
 }
 
 export default function Hero() {
   const { photo, save, remove } = useProfilePhoto();
+  const { isEditing, get } = useEditMode();
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -34,8 +34,7 @@ export default function Hero() {
     if (!file.type.startsWith("image/")) return;
     const reader = new FileReader();
     reader.onload = (e) => {
-      const result = e.target?.result as string;
-      save(result);
+      save(e.target?.result as string);
       setToast("saved");
       setTimeout(() => setToast(null), 3000);
     };
@@ -62,25 +61,16 @@ export default function Hero() {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const scrollToAbout = () =>
-    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
-
   return (
-    <section
-      id="home"
-      className="relative min-h-screen flex items-center overflow-hidden gradient-hero"
-    >
-      {/* Background botanical pattern */}
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden gradient-hero">
+      {/* Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, hsl(155 60% 60%), transparent 70%)" }} />
-        <div className="absolute bottom-12 -left-16 w-72 h-72 rounded-full opacity-8"
-          style={{ background: "radial-gradient(circle, hsl(155 50% 50%), transparent 70%)" }} />
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full opacity-10" style={{ background: "radial-gradient(circle, hsl(155 60% 60%), transparent 70%)" }} />
+        <div className="absolute bottom-12 -left-16 w-72 h-72 rounded-full opacity-8" style={{ background: "radial-gradient(circle, hsl(155 50% 50%), transparent 70%)" }} />
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle, hsl(155 60% 70%) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       </div>
 
-      {/* Upload toast */}
+      {/* Photo toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
@@ -88,259 +78,144 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: -20, x: "-50%" }}
             className="fixed top-20 left-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium shadow-lg"
-            style={{
-              background: toast === "saved" ? "hsl(155 50% 20%)" : "hsl(0 60% 30%)",
-              color: "hsl(0 0% 97%)",
-              border: "1px solid hsl(155 40% 35% / 0.5)",
-            }}
+            style={{ background: toast === "saved" ? "hsl(155 50% 20%)" : "hsl(0 60% 30%)", color: "hsl(0 0% 97%)", border: "1px solid hsl(155 40% 35% / 0.5)" }}
           >
             <Check className="w-4 h-4" />
-            {toast === "saved" ? "Photo saved successfully!" : "Photo removed — using default."}
+            {toast === "saved" ? "Photo saved!" : "Photo removed."}
           </motion.div>
         )}
       </AnimatePresence>
 
       <div className="container-max w-full section-padding py-28 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
+          {/* Text */}
           <div className="order-2 lg:order-1">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.6 }}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-6"
-              style={{ background: "hsl(155 40% 30% / 0.6)", color: "hsl(155 60% 82%)", border: "1px solid hsl(155 40% 45% / 0.4)" }}
-            >
+              style={{ background: "hsl(155 40% 30% / 0.6)", color: "hsl(155 60% 82%)", border: "1px solid hsl(155 40% 45% / 0.4)" }}>
               <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              Open to Research & Collaboration
+              <EditableText contentKey="hero.status" className="bg-transparent" />
             </motion.div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.7 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4"
-              style={{ color: "hsl(0 0% 97%)" }}
-            >
-              Sajeeb
+            <motion.h1 initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4" style={{ color: "hsl(0 0% 97%)" }}>
+              <EditableText contentKey="hero.name.first" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold" style={{ color: "hsl(0 0% 97%)" } as React.CSSProperties} />
               <br />
-              <span style={{ color: "hsl(155 60% 70%)" }}>Nandi</span>
+              <EditableText contentKey="hero.name.last" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold" style={{ color: "hsl(155 60% 70%)" } as React.CSSProperties} />
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35, duration: 0.6 }}
-              className="text-lg font-medium mb-2"
-              style={{ color: "hsl(155 40% 75%)" }}
-            >
-              Botany Undergraduate · Young Researcher
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.6 }}
+              className="text-lg font-medium mb-2" style={{ color: "hsl(155 40% 75%)" }}>
+              <EditableText contentKey="hero.role" className="text-lg font-medium" />
             </motion.p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45, duration: 0.6 }}
-              className="text-base leading-relaxed mb-8 max-w-lg"
-              style={{ color: "hsl(155 15% 78%)" }}
-            >
-              University of Barishal, Bangladesh — Passionate about plant science,
-              sustainable agriculture, and driving research that bridges academia with real-world impact.
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}
+              className="text-base leading-relaxed mb-8 max-w-lg" style={{ color: "hsl(155 15% 78%)" }}>
+              <EditableText contentKey="hero.description" multiline rows={3} className="text-base leading-relaxed" />
             </motion.p>
 
             {/* Contact chips */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.55, duration: 0.6 }}
-              className="flex flex-wrap gap-3 mb-8"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
+              className="flex flex-wrap gap-3 mb-8">
               {[
-                { icon: MapPin, text: "Jashore, Bangladesh" },
-                { icon: Mail, text: "sajeebnandi7@gmail.com", href: "mailto:sajeebnandi7@gmail.com" },
-                { icon: Linkedin, text: "LinkedIn", href: "https://www.linkedin.com/in/sajeeb-nandi" },
-              ].map(({ icon: Icon, text, href }) => (
-                <a
-                  key={text}
-                  href={href || undefined}
-                  target={href?.startsWith("http") ? "_blank" : undefined}
-                  rel="noreferrer"
-                  className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full transition-all duration-200 hover:scale-105"
-                  style={{
-                    background: "hsl(155 35% 25% / 0.7)",
-                    color: "hsl(155 40% 80%)",
-                    border: "1px solid hsl(155 35% 40% / 0.4)",
-                    cursor: href ? "pointer" : "default",
-                  }}
-                >
-                  <Icon className="w-3 h-3" />
-                  {text}
-                </a>
-              ))}
+                { icon: MapPin, key: "hero.location", isLink: false },
+                { icon: Mail, key: "hero.email", isLink: true, prefix: "mailto:" },
+                { icon: Linkedin, key: "hero.linkedin", label: "LinkedIn", isLink: true },
+              ].map(({ icon: Icon, key, isLink, prefix, label }) => {
+                const val = get(key);
+                const href = isLink ? (prefix ? `${prefix}${val}` : val) : undefined;
+                return (
+                  <div key={key}
+                    className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full"
+                    style={{ background: "hsl(155 35% 25% / 0.7)", color: "hsl(155 40% 80%)", border: "1px solid hsl(155 35% 40% / 0.4)" }}>
+                    <Icon className="w-3 h-3 flex-shrink-0" />
+                    {isEditing
+                      ? <EditableText contentKey={key} className="text-xs" />
+                      : <a href={href} target={href?.startsWith("http") ? "_blank" : undefined} rel="noreferrer">{label ?? val}</a>
+                    }
+                  </div>
+                );
+              })}
             </motion.div>
 
-            {/* CTA buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65, duration: 0.6 }}
-              className="flex flex-wrap gap-3"
-            >
-              <button
-                onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.6 }} className="flex flex-wrap gap-3">
+              <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 hover:scale-105 hover:shadow-green"
-                style={{ background: "hsl(155 50% 55%)", color: "hsl(155 50% 8%)" }}
-              >
+                style={{ background: "hsl(155 50% 55%)", color: "hsl(155 50% 8%)" }}>
                 Get In Touch
               </button>
-              <button
-                onClick={() => document.getElementById("research")?.scrollIntoView({ behavior: "smooth" })}
+              <button onClick={() => document.getElementById("research")?.scrollIntoView({ behavior: "smooth" })}
                 className="px-6 py-2.5 rounded-lg font-medium text-sm transition-all duration-200 hover:scale-105"
-                style={{ background: "transparent", color: "hsl(155 40% 80%)", border: "1px solid hsl(155 35% 45% / 0.6)" }}
-              >
+                style={{ background: "transparent", color: "hsl(155 40% 80%)", border: "1px solid hsl(155 35% 45% / 0.6)" }}>
                 View Research
               </button>
             </motion.div>
           </div>
 
-          {/* Profile Image — click or drag to upload */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
-            className="order-1 lg:order-2 flex flex-col items-center lg:items-end gap-4"
-          >
+          {/* Profile Photo */}
+          <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
+            className="order-1 lg:order-2 flex flex-col items-center lg:items-end gap-4">
             <div className="relative">
-              {/* Decorative rings */}
-              <div className="absolute inset-0 rounded-full scale-110 opacity-20"
-                style={{ border: "2px solid hsl(155 50% 55%)" }} />
-              <div className="absolute inset-0 rounded-full scale-125 opacity-10"
-                style={{ border: "1px solid hsl(155 50% 55%)" }} />
-
-              {/* Clickable / droppable photo area */}
+              <div className="absolute inset-0 rounded-full scale-110 opacity-20" style={{ border: "2px solid hsl(155 50% 55%)" }} />
+              <div className="absolute inset-0 rounded-full scale-125 opacity-10" style={{ border: "1px solid hsl(155 50% 55%)" }} />
               <div
                 className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full overflow-hidden animate-float cursor-pointer group"
-                style={{
-                  border: dragOver
-                    ? "4px solid hsl(155 60% 55%)"
-                    : "4px solid hsl(155 45% 45% / 0.5)",
-                  boxShadow: "0 20px 60px -10px hsl(155 50% 10% / 0.5), 0 0 40px hsl(155 50% 30% / 0.2)",
-                  transition: "border-color 0.2s",
-                }}
+                style={{ border: dragOver ? "4px solid hsl(155 60% 55%)" : "4px solid hsl(155 45% 45% / 0.5)", boxShadow: "0 20px 60px -10px hsl(155 50% 10% / 0.5), 0 0 40px hsl(155 50% 30% / 0.2)", transition: "border-color 0.2s" }}
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
                 onClick={() => inputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={handleDrop}
               >
-                <img
-                  src={photo || profileImg}
-                  alt="Sajeeb Nandi — Botany Researcher"
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-
-                {/* Hover overlay */}
+                <img src={photo || profileImg} alt="Sajeeb Nandi" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
                 <AnimatePresence>
                   {(hovering || dragOver) && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
-                      style={{ background: "hsl(155 50% 8% / 0.75)", backdropFilter: "blur(4px)" }}
-                    >
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center"
-                        style={{ background: "hsl(155 50% 55% / 0.2)", border: "1.5px solid hsl(155 50% 55% / 0.5)" }}>
+                      style={{ background: "hsl(155 50% 8% / 0.75)", backdropFilter: "blur(4px)" }}>
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "hsl(155 50% 55% / 0.2)", border: "1.5px solid hsl(155 50% 55% / 0.5)" }}>
                         <Camera className="w-6 h-6" style={{ color: "hsl(155 55% 70%)" }} />
                       </div>
-                      <p className="text-xs font-semibold text-center px-6 leading-tight"
-                        style={{ color: "hsl(155 40% 82%)" }}>
-                        {dragOver ? "Drop to upload" : "Click or drag to\nupload your photo"}
+                      <p className="text-xs font-semibold text-center px-6 leading-tight" style={{ color: "hsl(155 40% 82%)" }}>
+                        {dragOver ? "Drop to upload" : "Click or drag to upload"}
                       </p>
-                      <p className="text-xs" style={{ color: "hsl(155 20% 60%)" }}>JPG, PNG, WEBP</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
-
-              {/* Remove button — only shown when custom photo is set */}
               <AnimatePresence>
                 {photo && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.7 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.7 }}
-                    onClick={handleRemove}
-                    title="Remove custom photo"
-                    className="absolute top-1 right-1 sm:top-2 sm:right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all duration-200 hover:scale-110"
-                    style={{
-                      background: "hsl(0 55% 30%)",
-                      border: "1.5px solid hsl(0 50% 45% / 0.6)",
-                      color: "hsl(0 0% 95%)",
-                    }}
-                  >
+                  <motion.button initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.7 }}
+                    onClick={handleRemove} title="Remove photo"
+                    className="absolute top-1 right-1 sm:top-2 sm:right-2 w-8 h-8 rounded-full flex items-center justify-center z-10 transition-all hover:scale-110"
+                    style={{ background: "hsl(0 55% 30%)", border: "1.5px solid hsl(0 50% 45% / 0.6)", color: "hsl(0 0% 95%)" }}>
                     <X className="w-4 h-4" />
                   </motion.button>
                 )}
               </AnimatePresence>
-
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8, duration: 0.5 }}
+              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8, duration: 0.5 }}
                 className="absolute -bottom-2 -right-2 sm:bottom-4 sm:right-0 px-4 py-2 rounded-xl text-xs font-semibold"
-                style={{
-                  background: "hsl(155 45% 22%)",
-                  color: "hsl(155 60% 78%)",
-                  border: "1px solid hsl(155 40% 35% / 0.6)",
-                  boxShadow: "0 8px 20px hsl(155 50% 8% / 0.4)",
-                }}
-              >
-                🌿 Plant Scientist
+                style={{ background: "hsl(155 45% 22%)", color: "hsl(155 60% 78%)", border: "1px solid hsl(155 40% 35% / 0.6)", boxShadow: "0 8px 20px hsl(155 50% 8% / 0.4)" }}>
+                <EditableText contentKey="hero.badge" className="text-xs font-semibold" />
               </motion.div>
             </div>
-
-            {/* Upload hint pill */}
-            <motion.button
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
+            <motion.button initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.5 }}
               onClick={() => inputRef.current?.click()}
               className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200 hover:scale-105"
-              style={{
-                background: "hsl(155 35% 22% / 0.7)",
-                color: "hsl(155 45% 72%)",
-                border: "1px dashed hsl(155 35% 42% / 0.5)",
-              }}
-            >
+              style={{ background: "hsl(155 35% 22% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 35% 42% / 0.5)" }}>
               <Upload className="w-3 h-3" />
               {photo ? "Change photo" : "Upload your photo"}
             </motion.button>
-
-            {/* Hidden file input */}
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              className="hidden"
-              onChange={handleFileChange}
-            />
+            <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
           </motion.div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2 }}
-        onClick={scrollToAbout}
+      <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}
+        onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 transition-all hover:scale-110"
-        style={{ color: "hsl(155 30% 65%)" }}
-      >
+        style={{ color: "hsl(155 30% 65%)" }}>
         <span className="text-xs font-medium">Scroll</span>
         <ChevronDown className="w-5 h-5 animate-bounce" />
       </motion.button>

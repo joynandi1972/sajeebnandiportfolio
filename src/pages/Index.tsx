@@ -10,10 +10,12 @@ import Achievements from "@/components/portfolio/Achievements";
 import Gallery from "@/components/portfolio/Gallery";
 import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
+import EditBar from "@/components/portfolio/EditBar";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background font-body">
+      <EditBar />
       <Navbar />
       <main>
         <Hero />

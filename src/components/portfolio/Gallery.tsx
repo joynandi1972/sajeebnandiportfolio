@@ -2,15 +2,6 @@ import { useState, useCallback, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn, Tag, Plus, Upload, ImagePlus, Trash2, Check } from "lucide-react";
 
-import fieldworkMaigold from "@/assets/gallery/fieldwork-marigold.jpg";
-import labResearch from "@/assets/gallery/lab-research.jpg";
-import posterPresentation from "@/assets/gallery/poster-presentation.jpg";
-import verticalFarming from "@/assets/gallery/vertical-farming.jpg";
-import biologyOlympiad from "@/assets/gallery/biology-olympiad.jpg";
-import climateSeminar from "@/assets/gallery/climate-seminar.jpg";
-import omlasFellowship from "@/assets/gallery/omlas-fellowship.jpg";
-import marigoldStudy from "@/assets/gallery/marigold-study.jpg";
-
 type Category = "All" | "Fieldwork" | "Research" | "Events" | "Leadership";
 
 interface GalleryItem {
@@ -24,16 +15,7 @@ interface GalleryItem {
 
 const STORAGE_KEY = "sajeeb_gallery_custom_photos";
 
-const defaultItems: GalleryItem[] = [
-  { id: "d1", src: fieldworkMaigold, title: "Marigold Fieldwork", description: "Examining Tagetes erecta in the field — collecting data on floral traits and growth patterns under different PGR treatments.", category: "Fieldwork" },
-  { id: "d2", src: labResearch, title: "Laboratory Research", description: "Analyzing plant specimens under the microscope at University of Barishal botany laboratory.", category: "Research" },
-  { id: "d3", src: posterPresentation, title: "International Poster Presentation", description: "Presenting 'Soil-less Vertical Farming' research at the international competition — awarded Silver Innovator Award.", category: "Research" },
-  { id: "d4", src: marigoldStudy, title: "Floral Measurement Study", description: "Precise morphological measurements of Tagetes erecta flowers for the undergraduate research project on plant growth regulators.", category: "Fieldwork" },
-  { id: "d5", src: verticalFarming, title: "Vertical Farming Systems", description: "Exploring hydroponic vertical farming infrastructure — core subject of the Silver Innovator Award-winning research.", category: "Research" },
-  { id: "d6", src: biologyOlympiad, title: "Bangladesh Biology Olympiad", description: "Regional organizer for the Bangladesh Biology Olympiad, Barishal — inspiring hundreds of students in biological sciences.", category: "Events" },
-  { id: "d7", src: climateSeminar, title: "Generation Green Seminar", description: "Organizing the Botany Club seminar 'Generation Green: Voices for Climate Resilience' — uniting student voices for the environment.", category: "Events" },
-  { id: "d8", src: omlasFellowship, title: "OMLAS Fellowship", description: "Collaborative sessions with the international OMLAS cohort — training in governance, public policy, and sustainable leadership.", category: "Leadership" },
-];
+const defaultItems: GalleryItem[] = [];
 
 const categories: Category[] = ["All", "Fieldwork", "Research", "Events", "Leadership"];
 

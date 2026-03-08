@@ -1,7 +1,8 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { User, BookOpen, Globe, Award } from "lucide-react";
+import { EditableText } from "./Editable";
+import { useEditMode } from "@/contexts/EditMode";
 
 const highlights = [
   { icon: BookOpen, label: "Research Experience", desc: "Undergraduate plant science research with fieldwork and data analysis" },
@@ -13,77 +14,43 @@ const highlights = [
 export default function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
+  const { get } = useEditMode();
+  const tags = get("about.tags").split(",").map(t => t.trim()).filter(Boolean);
 
   return (
     <section id="about" className="section-padding bg-background">
       <div className="container-max" ref={ref}>
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-14"
-        >
-          <h2 className="section-title">About Me</h2>
+        <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center mb-14">
+          <h2 className="section-title"><EditableText contentKey="about.title" className="section-title" /></h2>
           <div className="section-divider mx-auto" />
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Text */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.65, delay: 0.15 }}
-          >
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.65, delay: 0.15 }}>
             <p className="text-base leading-relaxed text-foreground/80 mb-5">
-              I'm <span className="font-semibold text-primary">Sajeeb Nandi</span>, a Botany undergraduate at the{" "}
-              <span className="font-medium">University of Barishal</span>, Bangladesh. My academic journey has taken me
-              from the laboratory to international research stages, driven by a deep curiosity about plant science
-              and sustainable agriculture.
+              <EditableText contentKey="about.para1" multiline rows={4} className="text-base leading-relaxed" />
             </p>
             <p className="text-base leading-relaxed text-foreground/80 mb-5">
-              Currently serving as an <span className="font-medium text-primary">Admin & HR Intern</span> at the YSSE
-              Social Responsibility Wing, I support organizational operations and social impact initiatives. As a
-              selected <span className="font-medium text-primary">OMLAS Fellow</span>, I received training in governance
-              frameworks, public policy analysis, and sustainability — collaborating with an international cohort of
-              emerging leaders.
+              <EditableText contentKey="about.para2" multiline rows={4} className="text-base leading-relaxed" />
             </p>
             <p className="text-base leading-relaxed text-foreground/80">
-              My research focuses on plant growth regulators, floral biology, and vertical farming for urban food
-              security. I am a strong team player with a passion for bridging research, coordination, and
-              communication to create real-world environmental impact.
+              <EditableText contentKey="about.para3" multiline rows={4} className="text-base leading-relaxed" />
             </p>
-
             <div className="mt-6 flex flex-wrap gap-2">
-              {["Plant Science", "Sustainable Agriculture", "Vertical Farming", "Leadership", "Data Analysis"].map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 rounded-full text-xs font-medium"
-                  style={{
-                    background: "hsl(var(--primary-muted))",
-                    color: "hsl(var(--primary))",
-                    border: "1px solid hsl(var(--primary) / 0.15)",
-                  }}
-                >
+              {tags.map((tag) => (
+                <span key={tag} className="px-3 py-1 rounded-full text-xs font-medium"
+                  style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))", border: "1px solid hsl(var(--primary) / 0.15)" }}>
                   {tag}
                 </span>
               ))}
             </div>
           </motion.div>
 
-          {/* Highlights grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {highlights.map(({ icon: Icon, label, desc }, i) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
-                className="p-5 rounded-xl border border-border gradient-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 group"
-              >
-                <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-colors duration-200 group-hover:scale-110"
-                  style={{ background: "hsl(var(--primary-muted))" }}
-                >
+              <motion.div key={label} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
+                className="p-5 rounded-xl border border-border gradient-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 group">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200" style={{ background: "hsl(var(--primary-muted))" }}>
                   <Icon className="w-5 h-5 text-primary" />
                 </div>
                 <h3 className="font-semibold text-sm text-foreground mb-1">{label}</h3>
