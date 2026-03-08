@@ -30,7 +30,7 @@ export default function Skills() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const { get } = useEditMode();
-  const { count, add, remove } = useDynamicSection("skill", 5);
+  const { count, add, remove } = useDynamicSection("skill", 8);
 
   return (
     <section id="skills" className="section-padding bg-background relative overflow-hidden">
