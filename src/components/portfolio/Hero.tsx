@@ -22,14 +22,14 @@ function useProfilePhoto() {
   return { photo, save, remove };
 }
 
-// Floating particle component
-function Particle({ style }: { style: React.CSSProperties }) {
+// Floating particle component — slow drift
+function Particle({ style, dur, delay }: { style: React.CSSProperties; dur: number; delay: number }) {
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
       style={style}
-      animate={{ y: [-20, 20, -20], x: [-8, 8, -8], opacity: [0.2, 0.6, 0.2] }}
-      transition={{ duration: 4 + Math.random() * 4, repeat: Infinity, ease: "easeInOut", delay: Math.random() * 3 }}
+      animate={{ y: [-18, 18, -18], x: [-10, 10, -10], opacity: [0.15, 0.5, 0.15] }}
+      transition={{ duration: dur, repeat: Infinity, ease: "easeInOut", delay }}
     />
   );
 }
