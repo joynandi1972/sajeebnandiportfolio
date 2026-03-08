@@ -53,8 +53,8 @@ export default function Research() {
                   <motion.div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }} />
 
-                  {/* Remove button */}
-                  {count > 1 && (
+                  {/* Remove button — owner only */}
+                  {isOwnerView && count > 1 && (
                     <button
                       onClick={() => remove(i)}
                       className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
