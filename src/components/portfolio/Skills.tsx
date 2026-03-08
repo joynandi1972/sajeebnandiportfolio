@@ -1,9 +1,9 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
+import { Plus, Trash2 } from "lucide-react";
 import { EditableText, EditableNumber } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
-
-const SKILL_COUNT = 5;
+import { useDynamicSection } from "@/hooks/useDynamicSection";
 
 const softSkills = [
   { emoji: "🔬", label: "Critical Thinking" },
@@ -22,12 +22,15 @@ const skillGradients = [
   "linear-gradient(90deg, hsl(160 50% 22%), hsl(165 58% 42%))",
   "linear-gradient(90deg, hsl(150 48% 24%), hsl(160 55% 42%))",
   "linear-gradient(90deg, hsl(155 52% 20%), hsl(162 60% 40%))",
+  "linear-gradient(90deg, hsl(157 48% 22%), hsl(163 56% 41%))",
+  "linear-gradient(90deg, hsl(153 50% 21%), hsl(161 58% 40%))",
 ];
 
 export default function Skills() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const { get } = useEditMode();
+  const { count, add, remove } = useDynamicSection("skill", 5);
 
   return (
     <section id="skills" className="section-padding bg-background relative overflow-hidden">
@@ -48,55 +51,77 @@ export default function Skills() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
           {/* Skill bars */}
           <div className="space-y-7">
-            {Array.from({ length: SKILL_COUNT }, (_, i) => {
-              const level = parseInt(get(`skill.${i}.level`) || "80", 10);
-              return (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ duration: 0.55, delay: 0.15 + i * 0.1 }}>
-                  <div className="flex items-end justify-between mb-2">
-                    <div>
-                      <span className="font-semibold text-sm text-foreground">
-                        <EditableText contentKey={`skill.${i}.name`} className="font-semibold text-sm" />
-                      </span>
-                      <p className="text-xs text-muted-foreground mt-0.5">
-                        <EditableText contentKey={`skill.${i}.desc`} className="text-xs" />
-                      </p>
+            <AnimatePresence>
+              {Array.from({ length: count }, (_, i) => {
+                const level = parseInt(get(`skill.${i}.level`) || "80", 10);
+                const gradient = skillGradients[i % skillGradients.length];
+                return (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 20 }}
+                    transition={{ duration: 0.55, delay: 0.15 + i * 0.1 }}
+                    className="group relative">
+                    {/* Remove button */}
+                    {count > 1 && (
+                      <button
+                        onClick={() => remove(i)}
+                        className="absolute -top-1 right-0 w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
+                        style={{ background: "hsl(0 55% 35% / 0.12)", color: "hsl(0 55% 40%)" }}
+                        title="Remove skill">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+                    <div className="flex items-end justify-between mb-2">
+                      <div>
+                        <span className="font-semibold text-sm text-foreground">
+                          <EditableText contentKey={`skill.${i}.name`} className="font-semibold text-sm" placeholder="Skill Name" />
+                        </span>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          <EditableText contentKey={`skill.${i}.desc`} className="text-xs" placeholder="Brief description" />
+                        </p>
+                      </div>
+                      <div className="text-sm font-bold ml-3 flex-shrink-0 flex items-center gap-1" style={{ color: "hsl(var(--primary))" }}>
+                        <EditableNumber contentKey={`skill.${i}.level`} className="text-sm font-bold" min={0} max={100} />%
+                      </div>
                     </div>
-                    <div className="text-sm font-bold ml-3 flex-shrink-0 flex items-center gap-1" style={{ color: "hsl(var(--primary))" }}>
-                      <EditableNumber contentKey={`skill.${i}.level`} className="text-sm font-bold" min={0} max={100} />%
-                    </div>
-                  </div>
-                  {/* Track */}
-                  <div className="w-full h-2.5 rounded-full overflow-hidden relative"
-                    style={{ background: "hsl(var(--primary-muted))" }}>
-                    <motion.div
-                      className="h-full rounded-full relative overflow-hidden"
-                      style={{ background: skillGradients[i] }}
-                      initial={{ width: 0 }}
-                      animate={inView ? { width: `${level}%` } : { width: 0 }}
-                      transition={{ duration: 1.2, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}>
-                      {/* Shimmer on bar */}
+                    <div className="w-full h-2.5 rounded-full overflow-hidden relative"
+                      style={{ background: "hsl(var(--primary-muted))" }}>
                       <motion.div
-                        className="absolute inset-0"
-                        style={{ background: "linear-gradient(90deg, transparent 0%, hsl(0 0% 100% / 0.25) 50%, transparent 100%)", backgroundSize: "200% 100%" }}
-                        animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
-                        transition={{ duration: 2, delay: 0.8 + i * 0.1, repeat: Infinity, repeatDelay: 3 }}
+                        className="h-full rounded-full relative overflow-hidden"
+                        style={{ background: gradient }}
+                        initial={{ width: 0 }}
+                        animate={inView ? { width: `${level}%` } : { width: 0 }}
+                        transition={{ duration: 1.2, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}>
+                        <motion.div
+                          className="absolute inset-0"
+                          style={{ background: "linear-gradient(90deg, transparent 0%, hsl(0 0% 100% / 0.25) 50%, transparent 100%)", backgroundSize: "200% 100%" }}
+                          animate={{ backgroundPosition: ["-100% 0", "200% 0"] }}
+                          transition={{ duration: 2, delay: 0.8 + i * 0.1, repeat: Infinity, repeatDelay: 3 }}
+                        />
+                      </motion.div>
+                      <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
+                        style={{ background: "hsl(var(--primary-glow))", boxShadow: "0 0 8px hsl(var(--primary-glow))" }}
+                        initial={{ left: 0 }}
+                        animate={inView ? { left: `calc(${level}% - 6px)` } : { left: 0 }}
+                        transition={{ duration: 1.2, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
                       />
-                    </motion.div>
-                    {/* Glowing tip */}
-                    <motion.div
-                      className="absolute top-1/2 -translate-y-1/2 w-3 h-3 rounded-full"
-                      style={{ background: "hsl(var(--primary-glow))", boxShadow: "0 0 8px hsl(var(--primary-glow))" }}
-                      initial={{ left: 0 }}
-                      animate={inView ? { left: `calc(${level}% - 6px)` } : { left: 0 }}
-                      transition={{ duration: 1.2, delay: 0.3 + i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+
+            {/* Add skill button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              onClick={add}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
+              style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
+              <Plus className="w-4 h-4" />
+              Add Skill
+            </motion.button>
           </div>
 
           {/* Soft skills */}
@@ -108,16 +133,13 @@ export default function Skills() {
             </motion.h3>
             <div className="grid grid-cols-2 gap-3">
               {softSkills.map((skill, i) => (
-                <motion.div
-                  key={skill.label}
+                <motion.div key={skill.label}
                   initial={{ opacity: 0, scale: 0.85, y: 10 }}
                   animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.25 + i * 0.07, type: "spring", stiffness: 200 }}
                   whileHover={{ y: -4, scale: 1.03, boxShadow: "0 8px 24px hsl(155 30% 15% / 0.12)" }}
                   className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card transition-all duration-200 group cursor-default">
-                  <motion.span
-                    className="text-xl"
-                    whileHover={{ scale: 1.3, rotate: 10 }}
+                  <motion.span className="text-xl" whileHover={{ scale: 1.3, rotate: 10 }}
                     transition={{ type: "spring", stiffness: 300 }}>
                     {skill.emoji}
                   </motion.span>
