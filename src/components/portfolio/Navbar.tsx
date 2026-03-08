@@ -45,56 +45,75 @@ export default function Navbar() {
     <motion.header
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-card/95 backdrop-blur-md shadow-md border-b border-border"
+          ? "bg-card/90 backdrop-blur-xl shadow-lg border-b border-border"
           : "bg-transparent"
       }`}
     >
       <div className="container-max flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <button
+        <motion.button
           onClick={() => handleNavClick("#home")}
           className="flex items-center gap-2 group"
-        >
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+          whileHover={{ scale: 1.04 }}
+          whileTap={{ scale: 0.96 }}>
+          <motion.div
+            className="w-8 h-8 rounded-full bg-primary flex items-center justify-center"
+            whileHover={{ rotate: 20 }}
+            transition={{ type: "spring", stiffness: 300 }}>
             <Leaf className="w-4 h-4 text-primary-foreground" />
-          </div>
+          </motion.div>
           <span className="font-display font-semibold text-primary text-lg hidden sm:block">
             Sajeeb Nandi
           </span>
-        </button>
+        </motion.button>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-6">
-          {navItems.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => handleNavClick(item.href)}
-              className={`nav-link text-foreground hover:text-primary transition-colors ${
-                active === item.href.replace("#", "") ? "text-primary font-medium" : ""
-              }`}
-            >
-              {item.label}
-              {active === item.href.replace("#", "") && (
-                <motion.span
-                  layoutId="nav-indicator"
-                  className="absolute -bottom-0.5 left-0 w-full h-0.5 bg-primary rounded-full"
-                />
-              )}
-            </button>
-          ))}
+        <nav className="hidden lg:flex items-center gap-1">
+          {navItems.map((item) => {
+            const isActive = active === item.href.replace("#", "");
+            return (
+              <motion.button
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className={`relative px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  isActive ? "text-primary" : "text-foreground/70 hover:text-primary"
+                }`}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.95 }}>
+                {item.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-lg -z-10"
+                    style={{ background: "hsl(var(--primary-muted))" }}
+                    transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                  />
+                )}
+              </motion.button>
+            );
+          })}
         </nav>
 
         {/* Mobile menu button */}
-        <button
+        <motion.button
           className="lg:hidden p-2 rounded-md text-foreground hover:text-primary hover:bg-accent transition-colors"
           onClick={() => setOpen(!open)}
-          aria-label="Toggle menu"
-        >
-          {open ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+          whileTap={{ scale: 0.9 }}
+          aria-label="Toggle menu">
+          <AnimatePresence mode="wait">
+            {open
+              ? <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <X className="w-5 h-5" />
+                </motion.div>
+              : <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.15 }}>
+                  <Menu className="w-5 h-5" />
+                </motion.div>
+            }
+          </AnimatePresence>
+        </motion.button>
       </div>
 
       {/* Mobile Menu */}
@@ -104,9 +123,8 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="lg:hidden bg-card border-b border-border overflow-hidden"
-          >
+            transition={{ duration: 0.25, ease: "easeInOut" }}
+            className="lg:hidden bg-card/95 backdrop-blur-xl border-b border-border overflow-hidden">
             <nav className="flex flex-col py-3 px-4">
               {navItems.map((item, i) => (
                 <motion.button
@@ -117,10 +135,9 @@ export default function Navbar() {
                   onClick={() => handleNavClick(item.href)}
                   className={`text-left py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
                     active === item.href.replace("#", "")
-                      ? "text-primary bg-primary-muted"
+                      ? "text-primary bg-primary/10"
                       : "text-foreground hover:text-primary hover:bg-accent"
-                  }`}
-                >
+                  }`}>
                   {item.label}
                 </motion.button>
               ))}
