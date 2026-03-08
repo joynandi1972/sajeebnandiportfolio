@@ -92,7 +92,17 @@ const Index = ({ showEdit = false }: IndexProps) => {
   }, []);
 
   return (
-    <div className={`min-h-screen bg-background font-body${!showEdit ? " no-select" : ""}`}>
+    <div className={`min-h-screen font-body relative${!showEdit ? " no-select" : ""}`}
+      style={{
+        background: "var(--gradient-subtle)",
+        backgroundAttachment: "fixed",
+      }}>
+      {/* Global fixed mesh for depth behind all sections */}
+      <div className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage: "radial-gradient(circle at 30% 20%, hsl(155 45% 55% / 0.05) 0%, transparent 40%), radial-gradient(circle at 70% 80%, hsl(42 70% 55% / 0.04) 0%, transparent 40%)",
+          backdropFilter: "blur(0px)",
+        }} />
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
