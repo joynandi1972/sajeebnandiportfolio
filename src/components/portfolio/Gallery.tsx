@@ -256,6 +256,7 @@ export default function Gallery() {
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const { items: customItems, add, remove } = useCustomPhotos();
+  const { isOwnerView } = useEditMode();
 
   const allItems = [...defaultItems, ...customItems];
 
