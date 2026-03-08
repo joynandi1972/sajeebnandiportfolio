@@ -61,6 +61,8 @@ export default function StatsBar() {
       {/* Texture */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle, hsl(155 55% 70%) 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
+      {/* Glass overlay */}
+      <div className="absolute inset-0" style={{ backdropFilter: "blur(6px)", background: "hsl(155 50% 5% / 0.12)" }} />
       {/* Top edge */}
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: "linear-gradient(90deg, transparent, hsl(42 80% 50% / 0.25), hsl(155 55% 45% / 0.25), transparent)" }} />
