@@ -21,20 +21,19 @@ export default function Research() {
   const interests = get("research.interests").split(",").map(t => t.trim()).filter(Boolean);
 
   return (
-    <section id="research" className="section-padding relative overflow-hidden" style={{ background: "var(--gradient-section-alt)" }}>
+    <section id="research" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute bottom-0 left-0 w-96 h-96 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 40% 60% / 0.07), transparent 60%)" }} />
-      <div className="absolute top-0 right-0 w-72 h-72 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 80% 20%, hsl(155 40% 60% / 0.06), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute bottom-0 left-0 w-96 h-96 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(60px)" }} />
+      <div className="absolute top-0 right-0 w-72 h-72 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 80% 20%, hsl(42 70% 55% / 0.07), transparent 60%)", filter: "blur(55px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }} className="text-center mb-16">
-          <motion.span
-            className="section-label"
+          <motion.span className="section-label"
             initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.4 }}>
             Scientific Work
@@ -60,16 +59,13 @@ export default function Research() {
                   initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30, scale: 0.95 }}
                   transition={{ duration: 0.6, delay: 0.15 + i * 0.18 }}
-                  whileHover={{ y: -5 }}
-                  className="p-7 rounded-2xl bg-card border border-border transition-all duration-300 group relative overflow-hidden shine-on-hover"
-                  style={{ boxShadow: "var(--shadow-card)" }}>
-                  {/* Left accent border */}
+                  whileHover={{ y: -6, rotateX: 2, scale: 1.01 }}
+                  className="p-7 rounded-2xl transition-all duration-300 group relative overflow-hidden glass-card-3d"
+                  style={{ transformStyle: "preserve-3d", perspective: "1200px" }}>
                   <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
                     style={{ background: `linear-gradient(180deg, ${accent}, hsl(var(--primary-muted)))` }} />
-                  {/* Hover bg */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
-                    style={{ background: "radial-gradient(ellipse at 10% 50%, hsl(155 40% 80% / 0.06), transparent 60%)" }} />
-                  {/* Top shine */}
+                    style={{ background: "radial-gradient(ellipse at 10% 50%, hsl(155 40% 80% / 0.07), transparent 60%)" }} />
                   <motion.div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.5), transparent)" }} />
 
@@ -165,7 +161,6 @@ export default function Research() {
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 0.5 }}>
-          {/* Divider */}
           <div className="flex items-center gap-4 mb-8">
             <div className="flex-1 h-px" style={{ background: "hsl(var(--border))" }} />
             <h3 className="font-display font-semibold text-xl text-foreground whitespace-nowrap">Research Interests</h3>
@@ -177,13 +172,11 @@ export default function Research() {
                 initial={{ opacity: 0, scale: 0.8, y: 10 }}
                 animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
                 transition={{ delay: 0.55 + i * 0.07, type: "spring", stiffness: 200 }}
-                whileHover={{ scale: 1.08, y: -3, boxShadow: "0 8px 24px hsl(155 40% 20% / 0.15)" }}
-                className="px-5 py-2 rounded-full text-sm font-medium border transition-all duration-200 cursor-default"
+                whileHover={{ scale: 1.08, y: -3 }}
+                className="px-5 py-2 rounded-full text-sm font-medium border transition-all duration-200 cursor-default glass-card-3d"
                 style={{
-                  background: "hsl(var(--card))",
                   color: "hsl(var(--primary))",
                   borderColor: "hsl(var(--primary) / 0.3)",
-                  boxShadow: "var(--shadow-card)",
                 }}>
                 🌱 {interest}
               </motion.span>

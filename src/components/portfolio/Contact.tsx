@@ -42,11 +42,11 @@ export default function Contact() {
     }`;
 
   return (
-    <section id="contact" className="section-padding bg-background relative overflow-hidden">
+    <section id="contact" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: "radial-gradient(ellipse at 50% 100%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute bottom-0 left-0 w-96 h-96 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 20% 100%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(60px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
@@ -80,9 +80,9 @@ export default function Contact() {
                   key={label}
                   initial={{ opacity: 0, y: 12 }} animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.25 + i * 0.1 }}
-                  whileHover={{ y: -3 }}
-                  className="flex items-start gap-3.5 p-4 rounded-xl border border-border bg-card transition-all duration-200 group shine-on-hover"
-                  style={{ boxShadow: "var(--shadow-card)" }}>
+                  whileHover={{ y: -4, rotateX: 3, scale: 1.02 }}
+                  className="flex items-start gap-3.5 p-4 rounded-xl transition-all duration-200 group glass-card-3d"
+                  style={{ transformStyle: "preserve-3d", perspective: "600px" }}>
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 5 }}
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
@@ -110,8 +110,7 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }} className="lg:col-span-3">
-            <div className="p-7 rounded-2xl bg-card border border-border relative overflow-hidden"
-              style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="p-7 rounded-2xl relative overflow-hidden glass-card-3d">
               {/* Decorative corner gradients */}
               <div className="absolute top-0 right-0 w-48 h-48 pointer-events-none"
                 style={{ background: "radial-gradient(circle at 100% 0%, hsl(155 40% 80% / 0.08), transparent 60%)" }} />

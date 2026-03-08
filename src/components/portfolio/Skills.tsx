@@ -33,20 +33,19 @@ export default function Skills() {
   const { count, add, remove } = useDynamicSection("skill", 8);
 
   return (
-    <section id="skills" className="section-padding bg-background relative overflow-hidden">
+    <section id="skills" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute top-0 left-0 w-80 h-80 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 10% 20%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
-      <div className="absolute bottom-0 right-0 w-64 h-64 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 90% 90%, hsl(155 40% 85% / 0.07), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute top-0 left-0 w-80 h-80 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 10% 20%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(55px)" }} />
+      <div className="absolute bottom-0 right-0 w-64 h-64 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 90% 90%, hsl(42 70% 55% / 0.07), transparent 60%)", filter: "blur(50px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }} className="text-center mb-16">
-          <motion.span
-            className="section-label"
+          <motion.span className="section-label"
             initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.4 }}>
             Expertise
@@ -79,9 +78,9 @@ export default function Skills() {
                       initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ duration: 0.55, delay: 0.15 + i * 0.1 }}
-                      className="group relative p-4 rounded-xl border border-border bg-card transition-all duration-300 hover:border-primary/30"
-                      style={{ boxShadow: "var(--shadow-card)" }}>
-                      {/* Remove button */}
+                      whileHover={{ y: -3, rotateX: 2, scale: 1.01 }}
+                      className="group relative p-4 rounded-xl transition-all duration-300 glass-card-3d"
+                      style={{ transformStyle: "preserve-3d", perspective: "800px" }}>
                       {isOwnerView && count > 1 && (
                         <button
                           onClick={() => remove(i)}
@@ -160,9 +159,9 @@ export default function Skills() {
                   initial={{ opacity: 0, scale: 0.85, y: 10 }}
                   animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
                   transition={{ duration: 0.4, delay: 0.25 + i * 0.07, type: "spring", stiffness: 200 }}
-                  whileHover={{ y: -4, scale: 1.03 }}
-                  className="flex items-center gap-3 p-4 rounded-xl border border-border bg-card transition-all duration-200 group cursor-default shine-on-hover"
-                  style={{ boxShadow: "var(--shadow-card)" }}>
+                  whileHover={{ y: -5, rotateX: 4, rotateY: -3, scale: 1.04 }}
+                  className="flex items-center gap-3 p-4 rounded-xl transition-all duration-200 group cursor-default glass-card-3d"
+                  style={{ transformStyle: "preserve-3d", perspective: "600px" }}>
                   <motion.span className="text-xl flex-shrink-0" whileHover={{ scale: 1.3, rotate: 10 }}
                     transition={{ type: "spring", stiffness: 300 }}>
                     {skill.emoji}
