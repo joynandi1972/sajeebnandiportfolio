@@ -62,7 +62,10 @@ export default function Footer() {
                   onClick={() => scrollTo(link.id)}
                   className="text-left text-sm transition-colors"
                   style={{ color: "hsl(155 12% 65%)" }}
-                  whileHover={{ x: 4, color: "hsl(155 55% 70%)" } as object}>
+                  whileHover={{ x: 4 } as object}
+                  style={{ color: "hsl(155 12% 65%)" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "hsl(155 55% 70%)")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "hsl(155 12% 65%)")}>
                   {link.label}
                 </motion.button>
               ))}

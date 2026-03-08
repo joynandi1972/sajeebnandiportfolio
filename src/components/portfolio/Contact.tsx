@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef, useState } from "react";
 import { Mail, Phone, Linkedin, MapPin, Send, CheckCircle, Sparkles } from "lucide-react";
 import { EditableText } from "./Editable";
