@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import Navbar from "@/components/portfolio/Navbar";
 import Hero from "@/components/portfolio/Hero";
 import StatsBar from "@/components/portfolio/StatsBar";
@@ -11,12 +12,19 @@ import Gallery from "@/components/portfolio/Gallery";
 import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
 import EditBar from "@/components/portfolio/EditBar";
+import { useEditMode } from "@/contexts/EditMode";
 
 interface IndexProps {
   showEdit?: boolean;
 }
 
 const Index = ({ showEdit = false }: IndexProps) => {
+  const { setOwnerView } = useEditMode();
+
+  useEffect(() => {
+    setOwnerView(showEdit);
+  }, [showEdit, setOwnerView]);
+
   return (
     <div className="min-h-screen bg-background font-body">
       {showEdit && <EditBar />}
