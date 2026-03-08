@@ -10,7 +10,6 @@ const defaultEntries = [
   { key: "hsc", icon: BookOpen, badge: { label: "Completed", pulse: false }, accent: "hsl(155 38% 38%)" },
   { key: "ssc", icon: School, badge: { label: "Completed", pulse: false }, accent: "hsl(155 30% 46%)" },
 ];
-
 const extraIcons = [GraduationCap, BookOpen, School, GraduationCap, BookOpen];
 const extraAccents = [
   "hsl(155 28% 48%)", "hsl(155 35% 42%)", "hsl(155 32% 44%)",
@@ -36,20 +35,19 @@ export default function Education() {
   });
 
   return (
-    <section id="education" className="section-padding relative overflow-hidden" style={{ background: "var(--gradient-section-alt)" }}>
+    <section id="education" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute top-0 right-0 w-72 h-72 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 80% 20%, hsl(155 40% 60% / 0.08), transparent 60%)" }} />
-      <div className="absolute bottom-0 left-0 w-64 h-64 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 40% 60% / 0.06), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute top-0 right-0 w-80 h-80 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 80% 20%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(55px)" }} />
+      <div className="absolute bottom-0 left-0 w-64 h-64 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 20% 80%, hsl(42 70% 55% / 0.07), transparent 60%)", filter: "blur(50px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }} className="text-center mb-16">
-          <motion.span
-            className="section-label"
+          <motion.span className="section-label"
             initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.4 }}>
             Academic Journey
@@ -89,7 +87,7 @@ export default function Education() {
                       className="hidden sm:flex absolute left-0 top-6 w-12 h-12 rounded-full items-center justify-center z-10"
                       style={{
                         background: `linear-gradient(135deg, ${accent}, hsl(155 40% 55%))`,
-                        boxShadow: `0 0 0 4px hsl(var(--secondary)), 0 4px 16px ${accent}60`
+                        boxShadow: `0 0 0 4px hsl(var(--background) / 0.8), 0 4px 16px ${accent}60`
                       }}
                       initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.35 + i * 0.18, type: "spring", stiffness: 250 }}
@@ -98,23 +96,20 @@ export default function Education() {
                     </motion.div>
 
                     <motion.div
-                      whileHover={{ y: -5 }}
-                      transition={{ duration: 0.25 }}
-                      className="relative p-6 sm:p-8 rounded-2xl bg-card border border-border transition-all duration-300 group overflow-hidden"
-                      style={{ boxShadow: "var(--shadow-card)" }}>
+                      whileHover={{ y: -6, rotateX: 3, scale: 1.01 }}
+                      transition={{ duration: 0.3 }}
+                      className="relative p-6 sm:p-8 rounded-2xl transition-all duration-300 group overflow-hidden glass-card-3d"
+                      style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
 
                       <motion.div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
                         style={{ background: `linear-gradient(180deg, ${accent}, hsl(var(--primary-muted)))` }}
                         initial={{ scaleY: 0 }} animate={{ scaleY: 1 }}
                         transition={{ duration: 0.7, delay: 0.5 + i * 0.18 }} />
-                      {/* Hover bg glow */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
                         style={{ background: "radial-gradient(circle at 20% 50%, hsl(155 40% 85% / 0.07), transparent 65%)" }} />
-                      {/* Top shine line */}
                       <div className="absolute top-0 left-8 right-8 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-400"
                         style={{ background: `linear-gradient(90deg, transparent, ${accent}70, transparent)` }} />
 
-                      {/* Remove button */}
                       {isOwnerView && !isDefault && (
                         <button
                           onClick={() => remove(i)}
@@ -125,7 +120,6 @@ export default function Education() {
                         </button>
                       )}
 
-                      {/* Mobile icon */}
                       <div className="flex sm:hidden items-center gap-3 mb-4">
                         <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
                           style={{ background: "hsl(var(--primary-muted))" }}>

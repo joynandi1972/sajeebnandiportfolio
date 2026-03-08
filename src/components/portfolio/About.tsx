@@ -18,12 +18,15 @@ export default function About() {
   const tags = get("about.tags").split(",").map(t => t.trim()).filter(Boolean);
 
   return (
-    <section id="about" className="section-padding bg-background relative overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute top-0 right-0 w-[520px] h-[520px] pointer-events-none"
-        style={{ background: "radial-gradient(circle at 85% 10%, hsl(155 40% 85% / 0.12), transparent 62%)" }} />
-      <div className="absolute bottom-0 left-0 w-80 h-80 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 15% 90%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
+    <section
+      id="about"
+      className="section-padding glass-section section-mesh relative overflow-hidden"
+    >
+      {/* Decorative background blobs */}
+      <div className="absolute top-0 right-0 w-[520px] h-[520px] pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 85% 10%, hsl(155 55% 50% / 0.10), transparent 62%)", filter: "blur(60px)" }} />
+      <div className="absolute bottom-0 left-0 w-80 h-80 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 15% 90%, hsl(42 80% 55% / 0.07), transparent 60%)", filter: "blur(50px)" }} />
       <div className="absolute top-0 left-0 right-0 h-px section-separator" />
 
       <div className="container-max" ref={ref}>
@@ -49,7 +52,6 @@ export default function About() {
           <motion.div
             initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.65, delay: 0.15 }}>
-            {/* Quote accent */}
             <div className="relative pl-5 mb-7 border-l-2" style={{ borderColor: "hsl(var(--primary) / 0.35)" }}>
               <div className="absolute -left-px top-0 bottom-0 w-0.5 rounded-full"
                 style={{ background: "linear-gradient(180deg, hsl(42 88% 52%), hsl(var(--primary)))" }} />
@@ -58,15 +60,11 @@ export default function About() {
               </p>
             </div>
             <div className="space-y-4">
-              <p className="text-base leading-[1.85] text-foreground/75 text-justify">
-                <EditableText contentKey="about.para1" multiline rows={4} className="text-base leading-[1.85] text-justify" />
-              </p>
-              <p className="text-base leading-[1.85] text-foreground/75 text-justify">
-                <EditableText contentKey="about.para2" multiline rows={4} className="text-base leading-[1.85] text-justify" />
-              </p>
-              <p className="text-base leading-[1.85] text-foreground/75 text-justify">
-                <EditableText contentKey="about.para3" multiline rows={4} className="text-base leading-[1.85] text-justify" />
-              </p>
+              {["about.para1","about.para2","about.para3"].map(k => (
+                <p key={k} className="text-base leading-[1.85] text-foreground/75 text-justify">
+                  <EditableText contentKey={k} multiline rows={4} className="text-base leading-[1.85] text-justify" />
+                </p>
+              ))}
             </div>
             <div className="mt-8 flex flex-wrap gap-2">
               {tags.map((tag, i) => (
@@ -87,26 +85,20 @@ export default function About() {
             </div>
           </motion.div>
 
-          {/* Highlight cards */}
+          {/* Highlight cards — 3D glass */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {highlights.map(({ icon: Icon, label, desc, color, bg }, i) => (
               <motion.div
                 key={label}
                 initial={{ opacity: 0, y: 28, scale: 0.93 }} animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: 0.2 + i * 0.1 }}
-                whileHover={{ y: -6 }}
-                className="p-5 rounded-2xl border transition-all duration-300 group relative overflow-hidden shine-sweep"
-                style={{
-                  background: "hsl(var(--card))",
-                  borderColor: "hsl(var(--border))",
-                  boxShadow: "var(--shadow-card)",
-                }}>
-                {/* Top accent */}
+                whileHover={{ y: -8, rotateX: 4, rotateY: -4, scale: 1.02 }}
+                className="p-5 rounded-2xl transition-all duration-300 group relative overflow-hidden glass-card-3d shine-sweep"
+                style={{ transformStyle: "preserve-3d", perspective: "800px" }}>
                 <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
                   style={{ background: `linear-gradient(90deg, ${color}60, ${color}20, transparent)` }} />
-                {/* Hover bg */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
-                  style={{ background: `radial-gradient(circle at 20% 20%, ${bg}40, transparent 65%)` }} />
+                  style={{ background: `radial-gradient(circle at 20% 20%, ${bg}50, transparent 65%)` }} />
                 <motion.div
                   whileHover={{ scale: 1.14, rotate: 6 }}
                   transition={{ type: "spring", stiffness: 400 }}

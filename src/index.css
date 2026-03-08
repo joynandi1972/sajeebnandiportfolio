@@ -300,7 +300,54 @@
   }
 }
 
-/* ── Screenshot / print protection ── */
+/* ── 3D glassmorphism system ── */
+.glass-section {
+  position: relative;
+  background: hsl(var(--background) / 0.45) !important;
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+}
+
+.glass-card-3d {
+  background: hsl(var(--card) / 0.55) !important;
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid hsl(var(--border) / 0.45) !important;
+  box-shadow:
+    0 8px 32px hsl(155 30% 8% / 0.18),
+    0 2px 8px hsl(155 30% 8% / 0.10),
+    inset 0 1px 0 hsl(0 0% 100% / 0.12) !important;
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+
+.glass-card-3d:hover {
+  box-shadow:
+    0 28px 60px hsl(155 38% 10% / 0.22),
+    0 8px 20px hsl(155 30% 8% / 0.14),
+    inset 0 1px 0 hsl(0 0% 100% / 0.18) !important;
+}
+
+/* 3D inner reflection streak */
+.glass-card-3d::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.18), transparent);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Section mesh backdrop */
+.section-mesh {
+  background-image:
+    radial-gradient(circle at 20% 20%, hsl(var(--primary) / 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, hsl(var(--primary-glow) / 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, hsl(155 40% 60% / 0.03) 0%, transparent 60%);
+}
+
+/* Screenshot / print protection */
 @media print {
   body { display: none !important; }
 }

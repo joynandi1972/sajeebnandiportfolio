@@ -21,18 +21,17 @@ export default function Experience() {
   const { count, add, remove } = useDynamicSection("exp", 4);
 
   return (
-    <section id="experience" className="section-padding bg-background relative overflow-hidden">
+    <section id="experience" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
-      <div className="absolute top-1/3 right-0 w-80 h-80 pointer-events-none"
-        style={{ background: "radial-gradient(circle at 90% 50%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
+      <div className="absolute top-1/3 right-0 w-80 h-80 pointer-events-none rounded-full"
+        style={{ background: "radial-gradient(circle at 90% 50%, hsl(155 55% 50% / 0.09), transparent 60%)", filter: "blur(55px)" }} />
 
       <div className="container-max" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }} className="text-center mb-16">
-          <motion.span
-            className="section-label"
+          <motion.span className="section-label"
             initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.4 }}>
             Work History
@@ -68,21 +67,20 @@ export default function Experience() {
                   className="relative sm:pl-14 group/item">
                   <motion.div
                     className="hidden sm:flex absolute left-[10px] top-6 w-5 h-5 rounded-full items-center justify-center z-10"
-                    style={{ background: expColors[i % expColors.length], boxShadow: `0 0 0 3px hsl(var(--primary-muted)), 0 0 12px ${expColors[i % expColors.length]}40` }}
+                    style={{ background: expColors[i % expColors.length], boxShadow: `0 0 0 3px hsl(var(--background) / 0.8), 0 0 12px ${expColors[i % expColors.length]}40` }}
                     initial={{ scale: 0 }} animate={{ scale: 1 }}
                     transition={{ delay: 0.3 + i * 0.1, type: "spring", stiffness: 300 }}
                   />
                   <motion.div
-                    whileHover={{ y: -5 }}
-                    transition={{ duration: 0.25 }}
-                    className="p-6 rounded-2xl bg-card border border-border transition-all duration-300 group relative overflow-hidden shine-on-hover"
-                    style={{ boxShadow: "var(--shadow-card)" }}>
+                    whileHover={{ y: -6, rotateX: 3, scale: 1.01 }}
+                    transition={{ duration: 0.3 }}
+                    className="p-6 rounded-2xl transition-all duration-300 group relative overflow-hidden glass-card-3d"
+                    style={{ transformStyle: "preserve-3d", perspective: "1000px" }}>
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
                       style={{ background: "radial-gradient(circle at 10% 50%, hsl(155 40% 85% / 0.07), transparent 65%)" }} />
                     <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl"
                       style={{ background: `linear-gradient(180deg, ${expColors[i % expColors.length]}, hsl(var(--primary-muted)))` }} />
 
-                    {/* Remove button — owner only */}
                     {isOwnerView && count > 1 && (
                       <button
                         onClick={() => remove(i)}
@@ -138,7 +136,6 @@ export default function Experience() {
             </AnimatePresence>
           </div>
 
-          {/* Add button — owner only */}
           {isOwnerView && (
             <motion.button
               whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
