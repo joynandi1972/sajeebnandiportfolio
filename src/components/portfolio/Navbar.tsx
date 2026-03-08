@@ -7,8 +7,8 @@ const subItems = [
   { label: "Education", href: "#education" },
   { label: "Experience", href: "#experience" },
   { label: "Research", href: "#research" },
-  { label: "Skills", href: "#skills" },
   { label: "Achievements", href: "#achievements" },
+  { label: "Skills", href: "#skills" },
 ];
 
 const topNavItems = [
