@@ -84,7 +84,7 @@ const Index = ({ showEdit = false }: IndexProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-body">
+    <div className={`min-h-screen bg-background font-body${!showEdit ? " no-select" : ""}`}>
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
