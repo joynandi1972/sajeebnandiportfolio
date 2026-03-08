@@ -188,6 +188,7 @@ const STORAGE_KEY = "sajeeb_portfolio_content";
 // ── Context ──────────────────────────────────────────────────────────────────
 interface EditModeContextType {
   isEditing: boolean;
+  isOwnerView: boolean;
   content: Record<string, string>;
   get: (key: string) => string;
   set: (key: string, value: string) => void;
@@ -195,6 +196,7 @@ interface EditModeContextType {
   cancel: () => void;
   startEditing: () => void;
   hasChanges: boolean;
+  setOwnerView: (v: boolean) => void;
 }
 
 const EditModeContext = createContext<EditModeContextType | null>(null);
@@ -213,6 +215,7 @@ export function EditModeProvider({ children }: { children: React.ReactNode }) {
   const [draft, setDraft] = useState<Record<string, string>>({ ...content });
   const [isEditing, setIsEditing] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
+  const [isOwnerView, setOwnerView] = useState(false);
 
   const startEditing = useCallback(() => {
     setDraft({ ...content });
@@ -231,7 +234,6 @@ export function EditModeProvider({ children }: { children: React.ReactNode }) {
 
   const save = useCallback(() => {
     setContent({ ...draft });
-    // Only save non-default values to localStorage
     const overrides: Record<string, string> = {};
     for (const key of Object.keys(draft)) {
       if (draft[key] !== DEFAULT_CONTENT[key]) overrides[key] = draft[key];
@@ -248,7 +250,7 @@ export function EditModeProvider({ children }: { children: React.ReactNode }) {
   }, [content]);
 
   return (
-    <EditModeContext.Provider value={{ isEditing, content: isEditing ? draft : content, get, set, save, cancel, startEditing, hasChanges }}>
+    <EditModeContext.Provider value={{ isEditing, isOwnerView, content: isEditing ? draft : content, get, set, save, cancel, startEditing, hasChanges, setOwnerView }}>
       {children}
     </EditModeContext.Provider>
   );
