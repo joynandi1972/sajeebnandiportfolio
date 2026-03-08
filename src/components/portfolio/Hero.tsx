@@ -69,7 +69,7 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
 
 export default function Hero() {
   const { photo, save, remove } = useProfilePhoto();
-  const { isEditing, get } = useEditMode();
+  const { isEditing, isOwnerView, get } = useEditMode();
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
   const [dragOver, setDragOver] = useState(false);
