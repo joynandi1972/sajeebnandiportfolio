@@ -110,8 +110,7 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: 30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.2 }} className="lg:col-span-3">
-            <div className="p-7 rounded-2xl bg-card border border-border relative overflow-hidden"
-              style={{ boxShadow: "var(--shadow-card)" }}>
+            <div className="p-7 rounded-2xl relative overflow-hidden glass-card-3d">
               {/* Decorative corner gradients */}
               <div className="absolute top-0 right-0 w-48 h-48 pointer-events-none"
                 style={{ background: "radial-gradient(circle at 100% 0%, hsl(155 40% 80% / 0.08), transparent 60%)" }} />

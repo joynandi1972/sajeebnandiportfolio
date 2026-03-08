@@ -198,13 +198,9 @@ export default function Achievements() {
                   animate={inView ? { opacity: 1, y: 0, scale: 1 } : {}}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ duration: 0.55, delay: 0.15 + i * 0.1, type: "spring", stiffness: 150 }}
-                  whileHover={{ y: -8 }}
-                  className="relative p-7 rounded-2xl border transition-all duration-300 group overflow-hidden flex flex-col shine-on-hover"
-                  style={{
-                    background: "hsl(var(--card))",
-                    borderColor: "hsl(var(--border))",
-                    boxShadow: "var(--shadow-card)",
-                  }}>
+                  whileHover={{ y: -10, rotateX: 4, rotateY: -3, scale: 1.02 }}
+                  className="relative p-7 rounded-2xl transition-all duration-300 group overflow-hidden flex flex-col glass-card-3d"
+                  style={{ transformStyle: "preserve-3d", perspective: "800px" }}>
                   {/* Top accent bar */}
                   <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
                     style={{ background: `linear-gradient(90deg, ${color}80, ${color}30, transparent)` }} />

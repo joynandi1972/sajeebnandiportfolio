@@ -297,9 +297,9 @@ export default function Gallery() {
   }, [remove, lightboxIndex, closeLightbox]);
 
   return (
-    <section id="gallery" className="section-padding bg-background relative overflow-hidden">
+    <section id="gallery" className="section-padding glass-section section-mesh relative overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px"
-        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.1), transparent)" }} />
+        style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.12), transparent)" }} />
       <div className="container-max" ref={ref}>
         {/* Header */}
         <motion.div
