@@ -20,6 +20,27 @@ interface IndexProps {
   showEdit?: boolean;
 }
 
+/** Detect browser name from userAgent */
+function getBrowser(): string {
+  const ua = navigator.userAgent;
+  if (ua.includes("Edg/")) return "Edge";
+  if (ua.includes("OPR/") || ua.includes("Opera/")) return "Opera";
+  if (ua.includes("Chrome/")) return "Chrome";
+  if (ua.includes("Firefox/")) return "Firefox";
+  if (ua.includes("Safari/") && !ua.includes("Chrome")) return "Safari";
+  return "Other";
+}
+
+/** Detect device type */
+function getDevice(): string {
+  const ua = navigator.userAgent;
+  if (/Mobi|Android|iPhone|iPad|iPod/i.test(ua)) {
+    if (/iPad/i.test(ua)) return "Tablet";
+    return "Mobile";
+  }
+  return "Desktop";
+}
+
 const Index = ({ showEdit = false }: IndexProps) => {
   const { setOwnerView } = useEditMode();
 
@@ -27,9 +48,15 @@ const Index = ({ showEdit = false }: IndexProps) => {
     setOwnerView(showEdit);
   }, [showEdit, setOwnerView]);
 
-  // Track visitor on every page load (runs once)
+  // Track unique visitor (ip + browser + device fingerprint)
   useEffect(() => {
-    supabase.functions.invoke("track-visitor").catch(() => {});
+    const browser = getBrowser();
+    const device = getDevice();
+    supabase.functions
+      .invoke("track-visitor", {
+        body: { browser, device },
+      })
+      .catch(() => {});
   }, []);
 
   return (
