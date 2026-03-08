@@ -72,8 +72,8 @@ export default function Experience() {
                     <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       style={{ background: expColors[i % expColors.length] }} />
 
-                    {/* Remove button */}
-                    {count > 1 && (
+                    {/* Remove button — owner only */}
+                    {isOwnerView && count > 1 && (
                       <button
                         onClick={() => remove(i)}
                         className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
