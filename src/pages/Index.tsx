@@ -48,6 +48,30 @@ const Index = ({ showEdit = false }: IndexProps) => {
     setOwnerView(showEdit);
   }, [showEdit, setOwnerView]);
 
+  // Content protection for visitors (not owner/edit mode)
+  useEffect(() => {
+    if (showEdit) return;
+
+    const blockContextMenu = (e: MouseEvent) => e.preventDefault();
+    const blockKeyboard = (e: KeyboardEvent) => {
+      const blocked = (
+        (e.ctrlKey || e.metaKey) && ["c", "s", "a", "u", "p"].includes(e.key.toLowerCase())
+      ) || e.key === "F12" || (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(e.key.toLowerCase()));
+      if (blocked) e.preventDefault();
+    };
+    const blockDrag = (e: DragEvent) => e.preventDefault();
+
+    document.addEventListener("contextmenu", blockContextMenu);
+    document.addEventListener("keydown", blockKeyboard);
+    document.addEventListener("dragstart", blockDrag);
+
+    return () => {
+      document.removeEventListener("contextmenu", blockContextMenu);
+      document.removeEventListener("keydown", blockKeyboard);
+      document.removeEventListener("dragstart", blockDrag);
+    };
+  }, [showEdit]);
+
   // Track unique visitor (ip + browser + device fingerprint)
   useEffect(() => {
     const browser = getBrowser();
@@ -60,7 +84,7 @@ const Index = ({ showEdit = false }: IndexProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background font-body">
+    <div className={`min-h-screen bg-background font-body${!showEdit ? " no-select" : ""}`}>
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
