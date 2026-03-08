@@ -5,22 +5,71 @@ import profileImg from "@/assets/profile.png";
 import { EditableText } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "sajeeb_portfolio_profile_photo";
+const STORAGE_BUCKET = "portfolio-images";
+const PHOTO_PATH = "profile/photo";
+const SETTINGS_KEY = "profile_photo_url";
 
 function useProfilePhoto() {
-  const [photo, setPhoto] = useState<string | null>(() => {
-    try { return localStorage.getItem(STORAGE_KEY); } catch { return null; }
-  });
-  const save = useCallback((dataUrl: string) => {
-    setPhoto(dataUrl);
-    try { localStorage.setItem(STORAGE_KEY, dataUrl); } catch {}
+  const [photo, setPhoto] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load from cloud on mount
+  useEffect(() => {
+    async function load() {
+      try {
+        // Check portfolio_settings for stored URL
+        const { data } = await supabase
+          .from("portfolio_settings")
+          .select("value")
+          .eq("key", SETTINGS_KEY)
+          .maybeSingle();
+
+        if (data?.value) {
+          setPhoto(data.value);
+        }
+      } catch {
+        // silently fail, show default
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
   }, []);
-  const remove = useCallback(() => {
+
+  const save = useCallback(async (file: File): Promise<void> => {
+    // Upload to storage (upsert)
+    const { error: uploadError } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .upload(PHOTO_PATH, file, { upsert: true, contentType: file.type });
+
+    if (uploadError) throw uploadError;
+
+    // Get public URL
+    const { data: urlData } = supabase.storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(PHOTO_PATH);
+
+    const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+
+    // Save URL to portfolio_settings
+    await supabase
+      .from("portfolio_settings")
+      .upsert({ key: SETTINGS_KEY, value: publicUrl, updated_at: new Date().toISOString() });
+
+    setPhoto(publicUrl);
+  }, []);
+
+  const remove = useCallback(async () => {
+    try {
+      await supabase.storage.from(STORAGE_BUCKET).remove([PHOTO_PATH]);
+      await supabase.from("portfolio_settings").delete().eq("key", SETTINGS_KEY);
+    } catch {}
     setPhoto(null);
-    try { localStorage.removeItem(STORAGE_KEY); } catch {}
   }, []);
-  return { photo, save, remove };
+
+  return { photo, loading, save, remove };
 }
 
 function Particle({ style, dur, delay }: { style: React.CSSProperties; dur: number; delay: number }) {
@@ -67,7 +116,7 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
 }
 
 export default function Hero() {
-  const { photo, save, remove } = useProfilePhoto();
+  const { photo, loading, save, remove } = useProfilePhoto();
   const { isEditing, isOwnerView, get } = useEditMode();
   const isMobile = useIsMobile();
 
@@ -77,8 +126,9 @@ export default function Hero() {
   };
 
   const [hovering, setHovering] = useState(false);
-  const [toast, setToast] = useState<"saved" | "removed" | null>(null);
+  const [toast, setToast] = useState<"saved" | "removed" | "error" | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -92,15 +142,19 @@ export default function Hero() {
     "OMLAS Fellow",
   ]);
 
-  const processFile = useCallback((file: File) => {
+  const processFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      save(e.target?.result as string);
+    setUploading(true);
+    try {
+      await save(file);
       setToast("saved");
       setTimeout(() => setToast(null), 3000);
-    };
-    reader.readAsDataURL(file);
+    } catch {
+      setToast("error");
+      setTimeout(() => setToast(null), 3000);
+    } finally {
+      setUploading(false);
+    }
   }, [save]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,9 +170,9 @@ export default function Hero() {
     if (file) processFile(file);
   };
 
-  const handleRemove = (e: React.MouseEvent) => {
+  const handleRemove = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    remove();
+    await remove();
     setToast("removed");
     setTimeout(() => setToast(null), 3000);
   };
@@ -147,32 +201,25 @@ export default function Hero() {
 
       {/* ── Rich layered background ── */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Radial hero highlight */}
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero-radial)" }} />
-        {/* Top-right orb */}
         <motion.div
           className="absolute -top-40 -right-40 w-[700px] h-[700px] rounded-full"
           style={{ background: "radial-gradient(circle, hsl(155 65% 35% / 0.12), transparent 65%)" }}
           animate={{ scale: [1, 1.18, 1], opacity: [0.12, 0.22, 0.12] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
         />
-        {/* Bottom-left orb */}
         <motion.div
           className="absolute -bottom-20 -left-40 w-[580px] h-[580px] rounded-full"
           style={{ background: "radial-gradient(circle, hsl(165 58% 30% / 0.1), transparent 65%)" }}
           animate={{ scale: [1.15, 1, 1.15], opacity: [0.1, 0.18, 0.1] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         />
-        {/* Centre subtle glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] rounded-full"
           style={{ background: "radial-gradient(ellipse, hsl(155 40% 25% / 0.06), transparent 60%)" }} />
-        {/* Dot grid */}
         <div className="absolute inset-0 opacity-[0.055]"
           style={{ backgroundImage: "radial-gradient(circle, hsl(155 55% 70%) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
-        {/* Horizontal rule at bottom of hero */}
         <div className="absolute bottom-0 left-0 right-0 h-px"
           style={{ background: "linear-gradient(90deg, transparent, hsl(155 40% 40% / 0.3), transparent)" }} />
-        {/* Floating particles */}
         {particles.map(p => <Particle key={p.id} style={p.style} dur={p.dur} delay={p.delay} />)}
       </div>
 
@@ -184,9 +231,13 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0, x: "-50%" }}
             exit={{ opacity: 0, y: -20, x: "-50%" }}
             className="fixed top-20 left-1/2 z-50 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold shadow-xl"
-            style={{ background: toast === "saved" ? "hsl(155 52% 18%)" : "hsl(0 60% 28%)", color: "hsl(0 0% 97%)", border: "1px solid hsl(155 40% 32% / 0.5)" }}>
+            style={{
+              background: toast === "error" ? "hsl(0 60% 28%)" : toast === "saved" ? "hsl(155 52% 18%)" : "hsl(0 60% 28%)",
+              color: "hsl(0 0% 97%)",
+              border: "1px solid hsl(155 40% 32% / 0.5)"
+            }}>
             <Check className="w-4 h-4" />
-            {toast === "saved" ? "Photo saved!" : "Photo removed."}
+            {toast === "saved" ? "Photo saved for all visitors!" : toast === "removed" ? "Photo removed." : "Upload failed. Try again."}
           </motion.div>
         )}
       </AnimatePresence>
@@ -201,7 +252,6 @@ export default function Hero() {
             initial={!isMobile ? "hidden" : false}
             animate={!isMobile ? "visible" : false}>
 
-            {/* Status pill */}
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-7"
@@ -220,7 +270,6 @@ export default function Hero() {
               <EditableText contentKey="hero.status" className="bg-transparent" />
             </motion.div>
 
-            {/* Name */}
             <motion.h1
               initial={{ opacity: 0, y: 32 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.75 }}
               className="font-display font-bold leading-[1.05] tracking-tight mb-5"
@@ -238,7 +287,6 @@ export default function Hero() {
               </span>
             </motion.h1>
 
-            {/* Typewriter role */}
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.6 }}
               className="flex items-center gap-2 mb-3 h-8">
@@ -253,14 +301,12 @@ export default function Hero() {
               }
             </motion.div>
 
-            {/* Description */}
             <motion.p
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}
               className="text-base leading-relaxed mb-8 max-w-lg" style={{ color: "hsl(155 15% 72%)" }}>
               <EditableText contentKey="hero.description" multiline rows={3} className="text-base leading-relaxed" />
             </motion.p>
 
-            {/* Contact chips */}
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55, duration: 0.6 }}
               className="flex flex-wrap gap-2.5 mb-9">
@@ -291,7 +337,6 @@ export default function Hero() {
               })}
             </motion.div>
 
-            {/* CTA buttons */}
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.6 }}
               className="flex flex-wrap gap-3">
@@ -301,7 +346,6 @@ export default function Hero() {
                 onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
                 className="group relative px-7 py-3 rounded-xl font-semibold text-sm overflow-hidden flex items-center gap-2"
                 style={{ background: "linear-gradient(135deg, hsl(42 88% 52%), hsl(42 80% 44%))", color: "hsl(160 60% 8%)" }}>
-                {/* Shimmer sweep */}
                 <motion.div
                   className="absolute inset-0 pointer-events-none"
                   style={{ background: "linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.15), transparent)" }}
@@ -338,7 +382,6 @@ export default function Hero() {
               transition={{ type: "spring", stiffness: 280, damping: 28 }}
               className="relative">
 
-              {/* Outer glow ring */}
               <motion.div className="absolute inset-0 rounded-full"
                 style={{ border: "1px solid hsl(42 80% 55% / 0.3)" }}
                 animate={{ scale: [1.09, 1.20, 1.09], opacity: [0.25, 0.55, 0.25] }}
@@ -348,12 +391,10 @@ export default function Hero() {
                 animate={{ scale: [1.22, 1.36, 1.22], opacity: [0.12, 0.28, 0.12] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }} />
 
-              {/* Rotating dashed halo */}
               <motion.div className="absolute rounded-full"
                 style={{ border: "1.5px dashed hsl(42 75% 55% / 0.2)", inset: "-14%", borderRadius: "9999px" }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 22, repeat: Infinity, ease: "linear" }} />
-              {/* Counter-rotating halo */}
               <motion.div className="absolute rounded-full"
                 style={{ border: "1px dashed hsl(155 50% 45% / 0.12)", inset: "-22%", borderRadius: "9999px" }}
                 animate={{ rotate: -360 }}
@@ -373,16 +414,30 @@ export default function Hero() {
                 onDragOver={e => { if (!isOwnerView) return; e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
                 onDrop={isOwnerView ? handleDrop : undefined}>
-                <img src={photo || profileImg} alt="Sajeeb Nandi" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                {/* Inner vignette */}
+
+                {loading ? (
+                  <div className="w-full h-full flex items-center justify-center"
+                    style={{ background: "hsl(155 35% 12%)" }}>
+                    <motion.div className="w-8 h-8 rounded-full border-2 border-t-transparent"
+                      style={{ borderColor: "hsl(155 50% 45%)", borderTopColor: "transparent" }}
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
+                  </div>
+                ) : (
+                  <img
+                    src={photo || profileImg}
+                    alt="Sajeeb Nandi"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                )}
+
                 <div className="absolute inset-0 rounded-full pointer-events-none"
                   style={{ background: "radial-gradient(circle at 50% 0%, transparent 60%, hsl(155 55% 6% / 0.3) 100%)" }} />
-                {/* Hover shimmer */}
                 <motion.div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400"
                   style={{ background: "linear-gradient(135deg, hsl(42 90% 60% / 0.08) 0%, transparent 50%, hsl(155 55% 50% / 0.08) 100%)" }} />
 
                 <AnimatePresence>
-                  {isOwnerView && (hovering || dragOver) && (
+                  {isOwnerView && (hovering || dragOver) && !uploading && (
                     <motion.div
                       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
@@ -395,6 +450,18 @@ export default function Hero() {
                       <p className="text-xs font-semibold text-center px-6 leading-tight" style={{ color: "hsl(155 40% 80%)" }}>
                         {dragOver ? "Drop to upload" : "Click or drag to upload"}
                       </p>
+                    </motion.div>
+                  )}
+                  {isOwnerView && uploading && (
+                    <motion.div
+                      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                      className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
+                      style={{ background: "hsl(160 60% 6% / 0.85)", backdropFilter: "blur(6px)" }}>
+                      <motion.div className="w-10 h-10 rounded-full border-2 border-t-transparent"
+                        style={{ borderColor: "hsl(155 50% 55%)", borderTopColor: "transparent" }}
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }} />
+                      <p className="text-xs font-semibold" style={{ color: "hsl(155 40% 80%)" }}>Uploading…</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -438,10 +505,11 @@ export default function Hero() {
                   transition={{ delay: 1.1, duration: 0.5 }}
                   whileHover={{ scale: 1.05 }}
                   onClick={() => inputRef.current?.click()}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200"
+                  disabled={uploading}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 disabled:opacity-50"
                   style={{ background: "hsl(155 38% 20% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 38% 42% / 0.5)" }}>
                   <Upload className="w-3 h-3" />
-                  {photo ? "Change photo" : "Upload your photo"}
+                  {uploading ? "Uploading…" : photo ? "Change photo" : "Upload your photo"}
                 </motion.button>
                 <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
               </>
