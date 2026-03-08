@@ -2,6 +2,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { useRef } from "react";
 import { Briefcase, Calendar, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { EditableText } from "./Editable";
+import { useEditMode } from "@/contexts/EditMode";
 import { useDynamicSection } from "@/hooks/useDynamicSection";
 
 const expColors = [
