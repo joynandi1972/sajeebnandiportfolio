@@ -16,25 +16,31 @@ export type Database = {
     Tables: {
       visitor_logs: {
         Row: {
+          browser: string | null
           city: string | null
           country: string
           country_code: string
+          device: string | null
           id: string
           ip: string | null
           visited_at: string
         }
         Insert: {
+          browser?: string | null
           city?: string | null
           country?: string
           country_code?: string
+          device?: string | null
           id?: string
           ip?: string | null
           visited_at?: string
         }
         Update: {
+          browser?: string | null
           city?: string | null
           country?: string
           country_code?: string
+          device?: string | null
           id?: string
           ip?: string | null
           visited_at?: string
