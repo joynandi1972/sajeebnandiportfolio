@@ -218,8 +218,8 @@ export default function Achievements() {
                   <p className="text-xs font-medium text-primary mb-3">
                     <EditableText contentKey={`ach.${i}.org`} className="text-xs font-medium" placeholder="Issuing Organisation" />
                   </p>
-                  <p className="text-sm text-foreground/70 leading-relaxed">
-                    <EditableText contentKey={`ach.${i}.description`} multiline rows={3} className="text-sm leading-relaxed" placeholder="Describe this achievement..." />
+                  <p className="text-sm text-foreground/70 leading-relaxed text-justify">
+                    <EditableText contentKey={`ach.${i}.description`} multiline rows={3} className="text-sm leading-relaxed text-justify" placeholder="Describe this achievement..." />
                   </p>
 
                   <div className="mt-auto pt-2">

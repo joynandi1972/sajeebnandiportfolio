@@ -45,14 +45,14 @@ export default function About() {
             initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.65, delay: 0.15 }}>
             <div className="space-y-5">
-              <p className="text-base leading-relaxed text-foreground/80">
-                <EditableText contentKey="about.para1" multiline rows={4} className="text-base leading-relaxed" />
+              <p className="text-base leading-relaxed text-foreground/80 text-justify">
+                <EditableText contentKey="about.para1" multiline rows={4} className="text-base leading-relaxed text-justify" />
               </p>
-              <p className="text-base leading-relaxed text-foreground/80">
-                <EditableText contentKey="about.para2" multiline rows={4} className="text-base leading-relaxed" />
+              <p className="text-base leading-relaxed text-foreground/80 text-justify">
+                <EditableText contentKey="about.para2" multiline rows={4} className="text-base leading-relaxed text-justify" />
               </p>
-              <p className="text-base leading-relaxed text-foreground/80">
-                <EditableText contentKey="about.para3" multiline rows={4} className="text-base leading-relaxed" />
+              <p className="text-base leading-relaxed text-foreground/80 text-justify">
+                <EditableText contentKey="about.para3" multiline rows={4} className="text-base leading-relaxed text-justify" />
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-2">

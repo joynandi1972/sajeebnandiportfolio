@@ -166,8 +166,8 @@ export default function Education() {
                       </div>
 
                       {get(`${key}.description`) && (
-                        <p className="text-sm text-foreground/75 leading-relaxed mb-4">
-                          <EditableText contentKey={`${key}.description`} multiline rows={3} className="text-sm leading-relaxed" placeholder="Description..." />
+                        <p className="text-sm text-foreground/75 leading-relaxed mb-4 text-justify">
+                          <EditableText contentKey={`${key}.description`} multiline rows={3} className="text-sm leading-relaxed text-justify" placeholder="Description..." />
                         </p>
                       )}
 
