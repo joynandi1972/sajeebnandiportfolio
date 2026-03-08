@@ -12,10 +12,14 @@ import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
 import EditBar from "@/components/portfolio/EditBar";
 
-const Index = () => {
+interface IndexProps {
+  showEdit?: boolean;
+}
+
+const Index = ({ showEdit = false }: IndexProps) => {
   return (
     <div className="min-h-screen bg-background font-body">
-      <EditBar />
+      {showEdit && <EditBar />}
       <Navbar />
       <main>
         <Hero />
