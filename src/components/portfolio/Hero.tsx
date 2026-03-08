@@ -4,6 +4,7 @@ import { MapPin, Mail, Linkedin, ChevronDown, Camera, Upload, X, Check, Sparkles
 import profileImg from "@/assets/profile.png";
 import { EditableText } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const STORAGE_KEY = "sajeeb_portfolio_profile_photo";
 
