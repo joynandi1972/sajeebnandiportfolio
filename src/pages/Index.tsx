@@ -106,7 +106,7 @@ const Index = ({ showEdit = false }: IndexProps) => {
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <StatsBar />
         <About />
