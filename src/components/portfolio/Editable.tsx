@@ -3,6 +3,7 @@ import { useEditMode } from "@/contexts/EditMode";
 interface EditableTextProps {
   contentKey: string;
   className?: string;
+  style?: React.CSSProperties;
   placeholder?: string;
   as?: keyof JSX.IntrinsicElements;
   multiline?: boolean;
