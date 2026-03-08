@@ -125,12 +125,14 @@ export default function Hero() {
 
   const particles = Array.from({ length: 20 }, (_, i) => ({
     style: {
-      width: `${3 + Math.random() * 5}px`,
-      height: `${3 + Math.random() * 5}px`,
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      background: `hsl(155 ${50 + Math.random() * 20}% ${50 + Math.random() * 20}% / 0.4)`,
+      width: `${3 + (i * 7 % 5)}px`,
+      height: `${3 + (i * 7 % 5)}px`,
+      left: `${(i * 17 + 5) % 100}%`,
+      top: `${(i * 23 + 10) % 100}%`,
+      background: `hsl(155 ${50 + (i * 11 % 20)}% ${50 + (i * 13 % 20)}% / 0.4)`,
     } as React.CSSProperties,
+    dur: 8 + (i % 7) * 2,
+    delay: (i % 5) * 1.2,
     id: i,
   }));
 
