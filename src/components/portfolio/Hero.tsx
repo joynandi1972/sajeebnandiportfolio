@@ -366,17 +366,21 @@ export default function Hero() {
               </motion.div>
             </motion.div>
 
-            <motion.button
-              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 0.5 }}
-              whileHover={{ scale: 1.05 }}
-              onClick={() => inputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200"
-              style={{ background: "hsl(155 35% 22% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 35% 42% / 0.5)" }}>
-              <Upload className="w-3 h-3" />
-              {photo ? "Change photo" : "Upload your photo"}
-            </motion.button>
-            <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
+            {isOwnerView && (
+              <>
+                <motion.button
+                  initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  onClick={() => inputRef.current?.click()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all duration-200"
+                  style={{ background: "hsl(155 35% 22% / 0.7)", color: "hsl(155 45% 72%)", border: "1px dashed hsl(155 35% 42% / 0.5)" }}>
+                  <Upload className="w-3 h-3" />
+                  {photo ? "Change photo" : "Upload your photo"}
+                </motion.button>
+                <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleFileChange} />
+              </>
+            )}
           </motion.div>
         </div>
       </div>
