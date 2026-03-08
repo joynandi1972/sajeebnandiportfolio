@@ -312,10 +312,10 @@ export default function Hero() {
                 style={{ border: dragOver ? "3px solid hsl(155 60% 55%)" : "3px solid hsl(155 45% 45% / 0.6)", boxShadow: "0 25px 60px -10px hsl(155 50% 8% / 0.6), 0 0 60px hsl(155 50% 30% / 0.15)", transition: "border-color 0.2s" }}
                 onMouseEnter={() => setHovering(true)}
                 onMouseLeave={() => setHovering(false)}
-                onClick={() => inputRef.current?.click()}
-                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                onClick={() => isOwnerView && inputRef.current?.click()}
+                onDragOver={e => { if (!isOwnerView) return; e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
+                onDrop={isOwnerView ? handleDrop : undefined}
               >
                 <img src={photo || profileImg} alt="Sajeeb Nandi" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 {/* Overlay shimmer */}
@@ -324,7 +324,7 @@ export default function Hero() {
                   style={{ background: "linear-gradient(135deg, hsl(155 50% 50% / 0.1) 0%, transparent 50%, hsl(165 50% 50% / 0.1) 100%)" }}
                 />
                 <AnimatePresence>
-                  {(hovering || dragOver) && (
+                  {isOwnerView && (hovering || dragOver) && (
                     <motion.div
                       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                       className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-full"
