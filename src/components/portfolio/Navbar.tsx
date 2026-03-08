@@ -7,8 +7,8 @@ const subItems = [
   { label: "Education", href: "#education" },
   { label: "Experience", href: "#experience" },
   { label: "Research", href: "#research" },
-  { label: "Skills", href: "#skills" },
   { label: "Achievements", href: "#achievements" },
+  { label: "Skills", href: "#skills" },
 ];
 
 const topNavItems = [
@@ -84,8 +84,11 @@ export default function Navbar() {
   const scrollTo = (href: string) => {
     setOpen(false);
     setAboutOpen(false);
-    const el = document.getElementById(href.replace("#", ""));
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+    setMobileAboutOpen(false);
+    setTimeout(() => {
+      const el = document.getElementById(href.replace("#", ""));
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 80);
   };
 
   const aboutActive = ["about", "education", "experience", "research", "skills", "achievements"].includes(active);
