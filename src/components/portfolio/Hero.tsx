@@ -297,11 +297,10 @@ export default function Hero() {
               />
               {/* Rotating halo */}
               <motion.div
-                className="absolute inset-0 rounded-full"
-                style={{ border: "2px dashed hsl(155 40% 45% / 0.2)" }}
+                className="absolute rounded-full"
+                style={{ border: "2px dashed hsl(155 40% 45% / 0.2)", inset: "-12%", borderRadius: "9999px" }}
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                sx={{ scale: 1.25 }}
               />
 
               <div
