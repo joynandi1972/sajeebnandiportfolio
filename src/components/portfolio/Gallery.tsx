@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn, Tag, Plus, Upload, ImagePlus, Trash2, Check } from "lucide-react";
+import { useEditMode } from "@/contexts/EditMode";
 
 type Category = "All" | "Fieldwork" | "Research" | "Events" | "Leadership";
 
