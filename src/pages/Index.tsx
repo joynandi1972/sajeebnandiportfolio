@@ -12,7 +12,9 @@ import Gallery from "@/components/portfolio/Gallery";
 import Contact from "@/components/portfolio/Contact";
 import Footer from "@/components/portfolio/Footer";
 import EditBar from "@/components/portfolio/EditBar";
+import VisitorStats from "@/components/portfolio/VisitorStats";
 import { useEditMode } from "@/contexts/EditMode";
+import { supabase } from "@/integrations/supabase/client";
 
 interface IndexProps {
   showEdit?: boolean;
@@ -25,9 +27,15 @@ const Index = ({ showEdit = false }: IndexProps) => {
     setOwnerView(showEdit);
   }, [showEdit, setOwnerView]);
 
+  // Track visitor on every page load (runs once)
+  useEffect(() => {
+    supabase.functions.invoke("track-visitor").catch(() => {});
+  }, []);
+
   return (
     <div className="min-h-screen bg-background font-body">
       {showEdit && <EditBar />}
+      {showEdit && <VisitorStats />}
       <Navbar />
       <main>
         <Hero />
