@@ -93,6 +93,13 @@ const Index = ({ showEdit = false }: IndexProps) => {
 
   return (
     <div className={`min-h-screen bg-background font-body${!showEdit ? " no-select" : ""}`}>
+      {/* Watermark overlay — visible in screenshots, invisible in normal viewing */}
+      {!showEdit && (
+        <div
+          aria-hidden="true"
+          className="watermark-overlay"
+        />
+      )}
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
