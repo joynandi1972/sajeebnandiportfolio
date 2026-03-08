@@ -397,8 +397,8 @@ export default function Gallery() {
                   </div>
                 )}
 
-                {/* Delete button for custom photos */}
-                {item.isCustom && (
+                {/* Delete button for custom photos — owner only */}
+                {isOwnerView && item.isCustom && (
                   <button
                     onClick={e => handleDelete(item.id, e)}
                     className="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 z-10 hover:scale-110"
