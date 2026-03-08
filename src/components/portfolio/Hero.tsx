@@ -76,7 +76,7 @@ export default function Hero() {
   // Desktop-only: auto-scale up text & image on mount
   const desktopScaleVariants = {
     hidden: { opacity: 0, scale: 0.88 },
-    visible: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: "easeOut" as const } },
   };
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
