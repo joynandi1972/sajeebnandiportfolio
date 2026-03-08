@@ -218,16 +218,6 @@ export default function Achievements() {
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
                   style={{ background: `radial-gradient(circle at 30% 30%, hsl(155 40% 80% / ${highlight ? "0.1" : "0.06"}), transparent 60%)` }} />
 
-                {/* Featured badge */}
-                {highlight && (
-                  <motion.div
-                    className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold"
-                    style={{ background: "hsl(var(--primary))", color: "hsl(var(--primary-foreground))", boxShadow: "0 4px 12px hsl(var(--primary) / 0.35)" }}
-                    animate={{ boxShadow: ["0 4px 12px hsl(var(--primary) / 0.35)", "0 4px 20px hsl(var(--primary) / 0.55)", "0 4px 12px hsl(var(--primary) / 0.35)"] }}
-                    transition={{ duration: 2, repeat: Infinity }}>
-                    ⭐ Featured
-                  </motion.div>
-                )}
 
                 <motion.div
                   whileHover={{ scale: 1.15, rotate: highlight ? 10 : -5 }}
