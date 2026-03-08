@@ -20,7 +20,7 @@ const extraAccents = [
 export default function Education() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { get } = useEditMode();
+  const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("edu_entries", 3);
 
   // Build entry list: first 3 use defaults, extras get generic config

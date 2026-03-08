@@ -29,7 +29,7 @@ const skillGradients = [
 export default function Skills() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { get } = useEditMode();
+  const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("skill", 8);
 
   return (

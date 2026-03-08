@@ -127,7 +127,7 @@ function CertThumbnail({ src, onView, onRemove }: { src: string; onView: () => v
 export default function Achievements() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { isEditing } = useEditMode();
+  const { isEditing, isOwnerView } = useEditMode();
   const { certs, set: setCert, remove: removeCert } = useCertificates();
   const { count, add, remove } = useDynamicSection("ach", 3);
   const [lightbox, setLightbox] = useState<number | null>(null);

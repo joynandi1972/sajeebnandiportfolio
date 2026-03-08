@@ -10,7 +10,7 @@ const resIcons = [Microscope, Award, FlaskConical, Leaf, Microscope, Award];
 export default function Research() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { get } = useEditMode();
+  const { get, isOwnerView } = useEditMode();
   const { count, add, remove } = useDynamicSection("res", 2);
   const interests = get("research.interests").split(",").map(t => t.trim()).filter(Boolean);
 
