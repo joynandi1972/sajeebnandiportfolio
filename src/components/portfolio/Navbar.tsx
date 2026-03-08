@@ -50,6 +50,7 @@ function DarkModeToggle() {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [active, setActive] = useState("home");
   const [aboutOpen, setAboutOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
@@ -57,7 +58,11 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 24);
+      // Scroll progress
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(total > 0 ? (window.scrollY / total) * 100 : 0);
+      // Active section
       for (const section of [...allSections].reverse()) {
         const el = document.getElementById(section);
         if (el && window.scrollY >= el.offsetTop - 120) {
@@ -70,7 +75,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -96,85 +100,121 @@ export default function Navbar() {
   return (
     <motion.header
       initial={{ y: -80, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-card/90 backdrop-blur-xl shadow-lg border-b border-border" : "bg-transparent"
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-350 ${
+        scrolled
+          ? "bg-card/92 backdrop-blur-2xl shadow-[0_2px_24px_hsl(155_30%_12%/0.10)] border-b border-border/60"
+          : "bg-transparent"
       }`}>
-      <div className="container-max flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+
+      {/* Scroll progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 overflow-hidden">
+        <motion.div
+          className="h-full origin-left"
+          style={{
+            width: `${scrollProgress}%`,
+            background: "linear-gradient(90deg, hsl(var(--primary)), hsl(42 88% 52%), hsl(var(--primary-glow)))",
+          }}
+        />
+      </div>
+
+      <div className="container-max flex items-center justify-between h-[68px] px-4 sm:px-6 lg:px-8">
+
         {/* Logo */}
-        <motion.button onClick={() => scrollTo("#home")} className="flex items-center gap-2 group" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
-          <motion.div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center" whileHover={{ rotate: 20 }} transition={{ type: "spring", stiffness: 300 }}>
-            <Leaf className="w-4 h-4 text-primary-foreground" />
-          </motion.div>
-          <span className="font-display font-semibold text-primary text-lg hidden sm:block">Sajeeb Nandi</span>
+        <motion.button
+          onClick={() => scrollTo("#home")}
+          className="flex items-center gap-2.5 group"
+          whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+          <div className="relative">
+            <motion.div
+              className="w-9 h-9 rounded-xl flex items-center justify-center"
+              style={{
+                background: "linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)))",
+                boxShadow: "0 4px 12px hsl(var(--primary) / 0.3)",
+              }}
+              whileHover={{ rotate: 18, scale: 1.08 }}
+              transition={{ type: "spring", stiffness: 320 }}>
+              <Leaf className="w-4.5 h-4.5 w-4 h-4 text-primary-foreground" />
+            </motion.div>
+          </div>
+          <div className="hidden sm:block">
+            <span className="font-display font-bold text-foreground text-base leading-none block">Sajeeb Nandi</span>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground leading-none" style={{ letterSpacing: "0.12em" }}>Portfolio</span>
+          </div>
         </motion.button>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1">
-          {/* Home */}
+        <nav className="hidden lg:flex items-center gap-0.5">
           <NavBtn label="Home" isActive={active === "home"} onClick={() => scrollTo("#home")} />
 
-          {/* About (with dropdown) */}
+          {/* About dropdown */}
           <div className="relative" ref={dropdownRef}>
             <motion.button
               onClick={() => setAboutOpen(p => !p)}
-              className={`relative flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                aboutActive ? "text-primary" : "text-foreground/70 hover:text-primary"
+              className={`relative flex items-center gap-1 px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                aboutActive ? "text-primary" : "text-foreground/65 hover:text-foreground"
               }`}
-              whileHover={{ y: -1 }} whileTap={{ scale: 0.95 }}>
+              whileHover={{ y: -1 }} whileTap={{ scale: 0.96 }}>
               About
               <motion.span animate={{ rotate: aboutOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                <ChevronDown className="w-3.5 h-3.5" />
+                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
               </motion.span>
               {aboutActive && (
-                <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-lg -z-10"
+                <motion.span layoutId="nav-active-pill"
+                  className="absolute inset-0 rounded-lg -z-10"
                   style={{ background: "hsl(var(--primary-muted))" }}
-                  transition={{ type: "spring", stiffness: 350, damping: 30 }} />
+                  transition={{ type: "spring", stiffness: 380, damping: 32 }} />
               )}
             </motion.button>
 
-            {/* Dropdown */}
             <AnimatePresence>
               {aboutOpen && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.18, ease: "easeOut" }}
-                  className="absolute top-full left-0 mt-2 w-44 rounded-xl overflow-hidden shadow-lg border border-border"
-                  style={{ background: "hsl(var(--card))", backdropFilter: "blur(16px)" }}>
-                  {/* About link itself */}
-                  <button onClick={() => scrollTo("#about")}
-                    className={`w-full text-left px-4 py-2.5 text-sm font-semibold border-b border-border transition-colors hover:bg-accent ${active === "about" ? "text-primary" : "text-foreground"}`}>
-                    About
-                  </button>
-                  {subItems.map((item, i) => (
-                    <motion.button key={item.href}
-                      initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.04 }}
-                      onClick={() => scrollTo(item.href)}
-                      className={`w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-accent flex items-center gap-2 ${
-                        active === item.href.replace("#", "") ? "text-primary font-medium" : "text-foreground/75"
-                      }`}>
-                      <span className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: "hsl(var(--primary))" }} />
-                      {item.label}
-                    </motion.button>
-                  ))}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.16, ease: "easeOut" }}
+                  className="absolute top-full left-0 mt-2 w-48 rounded-2xl overflow-hidden"
+                  style={{
+                    background: "hsl(var(--card) / 0.95)",
+                    backdropFilter: "blur(18px)",
+                    border: "1px solid hsl(var(--border))",
+                    boxShadow: "0 16px 48px hsl(155 30% 12% / 0.16)",
+                  }}>
+                  <div className="p-1.5">
+                    <button onClick={() => scrollTo("#about")}
+                      className={`w-full text-left px-3.5 py-2.5 text-sm font-bold rounded-xl transition-colors hover:bg-accent ${active === "about" ? "text-primary bg-primary-muted" : "text-foreground"}`}>
+                      About Me
+                    </button>
+                    <div className="h-px mx-3 my-1" style={{ background: "hsl(var(--border))" }} />
+                    {subItems.map((item, i) => (
+                      <motion.button key={item.href}
+                        initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.04 }}
+                        onClick={() => scrollTo(item.href)}
+                        className={`w-full text-left px-3.5 py-2 text-sm rounded-xl transition-colors hover:bg-accent flex items-center gap-2.5 ${
+                          active === item.href.replace("#", "") ? "text-primary font-semibold" : "text-foreground/70"
+                        }`}>
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                          style={{ background: active === item.href.replace("#", "") ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))" }} />
+                        {item.label}
+                      </motion.button>
+                    ))}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
 
-          {/* Gallery & Contact */}
           <NavBtn label="Gallery" isActive={active === "gallery"} onClick={() => scrollTo("#gallery")} />
           <NavBtn label="Contact" isActive={active === "contact"} onClick={() => scrollTo("#contact")} />
         </nav>
 
-        {/* Right: dark mode + mobile */}
+        {/* Right controls */}
         <div className="flex items-center gap-2">
           <DarkModeToggle />
           <motion.button
-            className="lg:hidden p-2 rounded-md text-foreground hover:text-primary hover:bg-accent transition-colors"
+            className="lg:hidden p-2 rounded-xl text-foreground/70 hover:text-foreground hover:bg-accent transition-all"
             onClick={() => setOpen(!open)} whileTap={{ scale: 0.9 }} aria-label="Toggle menu">
             <AnimatePresence mode="wait">
               {open
@@ -186,38 +226,35 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       <AnimatePresence>
         {open && (
           <motion.div
             initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="lg:hidden bg-card/95 backdrop-blur-xl border-b border-border overflow-hidden">
-            <nav className="flex flex-col py-3 px-4">
-              {/* Home */}
+            className="lg:hidden border-b border-border overflow-hidden"
+            style={{ background: "hsl(var(--card) / 0.96)", backdropFilter: "blur(20px)" }}>
+            <nav className="flex flex-col p-3 gap-0.5">
               <MobileNavBtn label="Home" isActive={active === "home"} onClick={() => scrollTo("#home")} />
-
-              {/* About expandable */}
               <div>
                 <button
                   onClick={() => setMobileAboutOpen(p => !p)}
-                  className={`w-full flex items-center justify-between text-left py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
-                    aboutActive ? "text-primary bg-primary/10" : "text-foreground hover:text-primary hover:bg-accent"
+                  className={`w-full flex items-center justify-between text-left py-2.5 px-3.5 rounded-xl text-sm font-semibold transition-colors ${
+                    aboutActive ? "text-primary bg-primary/8" : "text-foreground hover:text-primary hover:bg-accent"
                   }`}>
                   About
                   <motion.span animate={{ rotate: mobileAboutOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                    <ChevronDown className="w-4 h-4" />
+                    <ChevronDown className="w-4 h-4 opacity-70" />
                   </motion.span>
                 </button>
                 <AnimatePresence>
                   {mobileAboutOpen && (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }} className="overflow-hidden">
-                      {/* About itself */}
+                      transition={{ duration: 0.2 }} className="overflow-hidden ml-2">
                       <button onClick={() => scrollTo("#about")}
-                        className={`w-full text-left py-2 pl-7 pr-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${active === "about" ? "text-primary" : "text-foreground/70 hover:text-primary hover:bg-accent"}`}>
-                        <span className="w-1 h-1 rounded-full" style={{ background: "hsl(var(--primary))" }} />
+                        className={`w-full text-left py-2 pl-6 pr-3 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 ${active === "about" ? "text-primary" : "text-foreground/70 hover:text-primary hover:bg-accent"}`}>
+                        <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(var(--primary))" }} />
                         About Me
                       </button>
                       {subItems.map((item, i) => (
@@ -225,10 +262,10 @@ export default function Navbar() {
                           initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: i * 0.04 }}
                           onClick={() => scrollTo(item.href)}
-                          className={`w-full text-left py-2 pl-7 pr-3 rounded-lg text-sm transition-colors flex items-center gap-2 ${
-                            active === item.href.replace("#", "") ? "text-primary font-medium" : "text-foreground/65 hover:text-primary hover:bg-accent"
+                          className={`w-full text-left py-2 pl-6 pr-3 rounded-xl text-sm transition-colors flex items-center gap-2 ${
+                            active === item.href.replace("#", "") ? "text-primary font-semibold" : "text-foreground/60 hover:text-primary hover:bg-accent"
                           }`}>
-                          <span className="w-1 h-1 rounded-full" style={{ background: "hsl(var(--primary))" }} />
+                          <span className="w-1.5 h-1.5 rounded-full" style={{ background: "hsl(var(--primary))" }} />
                           {item.label}
                         </motion.button>
                       ))}
@@ -236,7 +273,6 @@ export default function Navbar() {
                   )}
                 </AnimatePresence>
               </div>
-
               <MobileNavBtn label="Gallery" isActive={active === "gallery"} onClick={() => scrollTo("#gallery")} />
               <MobileNavBtn label="Contact" isActive={active === "contact"} onClick={() => scrollTo("#contact")} />
             </nav>
@@ -250,13 +286,13 @@ export default function Navbar() {
 function NavBtn({ label, isActive, onClick }: { label: string; isActive: boolean; onClick: () => void }) {
   return (
     <motion.button onClick={onClick}
-      className={`relative px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${isActive ? "text-primary" : "text-foreground/70 hover:text-primary"}`}
-      whileHover={{ y: -1 }} whileTap={{ scale: 0.95 }}>
+      className={`relative px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${isActive ? "text-primary" : "text-foreground/65 hover:text-foreground"}`}
+      whileHover={{ y: -1 }} whileTap={{ scale: 0.96 }}>
       {label}
       {isActive && (
-        <motion.span layoutId="nav-pill" className="absolute inset-0 rounded-lg -z-10"
+        <motion.span layoutId="nav-active-pill" className="absolute inset-0 rounded-lg -z-10"
           style={{ background: "hsl(var(--primary-muted))" }}
-          transition={{ type: "spring", stiffness: 350, damping: 30 }} />
+          transition={{ type: "spring", stiffness: 380, damping: 32 }} />
       )}
     </motion.button>
   );
@@ -265,8 +301,8 @@ function NavBtn({ label, isActive, onClick }: { label: string; isActive: boolean
 function MobileNavBtn({ label, isActive, onClick }: { label: string; isActive: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className={`text-left py-2.5 px-3 rounded-lg text-sm font-medium transition-colors ${
-        isActive ? "text-primary bg-primary/10" : "text-foreground hover:text-primary hover:bg-accent"
+      className={`text-left py-2.5 px-3.5 rounded-xl text-sm font-semibold transition-colors ${
+        isActive ? "text-primary bg-primary/8" : "text-foreground/70 hover:text-primary hover:bg-accent"
       }`}>
       {label}
     </button>
