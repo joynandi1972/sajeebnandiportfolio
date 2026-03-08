@@ -191,7 +191,12 @@ export default function Hero() {
       <div className="container-max w-full section-padding py-28 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text */}
-          <div className="order-2 lg:order-1">
+          <motion.div
+            className="order-2 lg:order-1"
+            variants={!isMobile ? desktopScaleVariants : undefined}
+            initial={!isMobile ? "hidden" : false}
+            animate={!isMobile ? "visible" : false}
+          >
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-6"
