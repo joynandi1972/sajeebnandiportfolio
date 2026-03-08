@@ -71,6 +71,13 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
 export default function Hero() {
   const { photo, save, remove } = useProfilePhoto();
   const { isEditing, isOwnerView, get } = useEditMode();
+  const isMobile = useIsMobile();
+
+  // Desktop-only: auto-scale up text & image on mount
+  const desktopScaleVariants = {
+    hidden: { opacity: 0, scale: 0.88 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } },
+  };
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
   const [dragOver, setDragOver] = useState(false);
