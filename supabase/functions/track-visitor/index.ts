@@ -12,13 +12,23 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Get visitor IP from headers
     const ip =
       req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
       req.headers.get("x-real-ip") ||
       "unknown";
 
-    // Geo-locate via ipapi.co (free, no key needed)
+    // Parse browser & device from request body
+    let browser = "unknown";
+    let device = "unknown";
+    try {
+      const body = await req.json();
+      browser = body.browser || "unknown";
+      device = body.device || "unknown";
+    } catch {
+      // no body — defaults stand
+    }
+
+    // Geo-locate via ipapi.co
     let country = "Unknown";
     let country_code = "??";
     let city: string | null = null;
@@ -46,12 +56,13 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    const { error } = await supabase.from("visitor_logs").insert({
-      ip,
-      country,
-      country_code,
-      city,
-    });
+    // Upsert: ON CONFLICT (ip, browser, device) → update timestamp only
+    const { error } = await supabase
+      .from("visitor_logs")
+      .upsert(
+        { ip, browser, device, country, country_code, city, visited_at: new Date().toISOString() },
+        { onConflict: "ip,browser,device", ignoreDuplicates: false }
+      );
 
     if (error) throw error;
 

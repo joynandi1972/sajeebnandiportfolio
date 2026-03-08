@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Globe, RefreshCw, ChevronDown, ChevronUp, X, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,29 +22,27 @@ export default function VisitorStats() {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(false);
+  const pollRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchStats = useCallback(async () => {
     setLoading(true);
     try {
-      // Total visitors
       const { count: total } = await supabase
         .from("visitor_logs")
         .select("*", { count: "exact", head: true });
 
-      // Today visitors
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
       const { count: todayCount } = await supabase
         .from("visitor_logs")
         .select("*", { count: "exact", head: true })
-        .gte("visited_at", today.toISOString());
+        .gte("visited_at", todayStart.toISOString());
 
-      // Country breakdown
       const { data: rows } = await supabase
         .from("visitor_logs")
         .select("country, country_code");
 
-      const countMap: Record<string, { country: string; country_code: string; count: number }> = {};
+      const countMap: Record<string, CountryCount> = {};
       for (const row of rows ?? []) {
         const key = row.country;
         if (!countMap[key]) {
@@ -53,17 +51,20 @@ export default function VisitorStats() {
         countMap[key].count++;
       }
 
-      const countries = Object.values(countMap).sort((a, b) => b.count - a.count);
-
-      setStats({ total: total ?? 0, today: todayCount ?? 0, countries });
+      setStats({
+        total: total ?? 0,
+        today: todayCount ?? 0,
+        countries: Object.values(countMap).sort((a, b) => b.count - a.count),
+      });
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Real-time subscription
+  // Realtime subscription + polling fallback (every 10 s)
   useEffect(() => {
     if (!open) return;
+
     fetchStats();
 
     const channel = supabase
@@ -71,9 +72,23 @@ export default function VisitorStats() {
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "visitor_logs" }, () => {
         fetchStats();
       })
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "visitor_logs" }, () => {
+        fetchStats();
+      })
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    const startPoll = () => {
+      pollRef.current = setTimeout(() => {
+        fetchStats();
+        startPoll();
+      }, 10_000);
+    };
+    startPoll();
+
+    return () => {
+      supabase.removeChannel(channel);
+      if (pollRef.current) clearTimeout(pollRef.current);
+    };
   }, [open, fetchStats]);
 
   const displayedCountries = expanded ? stats.countries : stats.countries.slice(0, 5);
@@ -94,7 +109,7 @@ export default function VisitorStats() {
         whileTap={{ scale: 0.97 }}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
+        transition={{ delay: 0.3, duration: 0.25 }}
       >
         <span className="relative flex h-2 w-2">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
@@ -110,10 +125,10 @@ export default function VisitorStats() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, x: -20, scale: 0.95 }}
+            initial={{ opacity: 0, x: -16, scale: 0.96 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: -20, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 280, damping: 24 }}
+            exit={{ opacity: 0, x: -16, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 380, damping: 28, duration: 0.2 }}
             className="fixed bottom-20 left-6 z-50 w-72 rounded-2xl overflow-hidden shadow-2xl"
             style={{
               background: "hsl(155 42% 10%)",
@@ -141,7 +156,7 @@ export default function VisitorStats() {
                   className="p-1.5 rounded-lg transition-colors"
                   style={{ color: "hsl(155 30% 55%)" }}
                   whileTap={{ rotate: 360 }}
-                  transition={{ duration: 0.4 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
                 </motion.button>
@@ -159,13 +174,22 @@ export default function VisitorStats() {
             <div className="grid grid-cols-2 gap-2 p-3"
               style={{ borderBottom: "1px solid hsl(155 25% 16%)" }}>
               {[
-                { label: "Total Visits", value: stats.total, icon: Users },
+                { label: "Unique Visitors", value: stats.total, icon: Users },
                 { label: "Today", value: stats.today, icon: TrendingUp },
               ].map(({ label, value, icon: Icon }) => (
                 <div key={label} className="rounded-xl p-3 text-center"
                   style={{ background: "hsl(155 38% 14%)", border: "1px solid hsl(155 28% 20%)" }}>
                   <Icon className="w-3.5 h-3.5 mx-auto mb-1" style={{ color: "hsl(155 50% 55%)" }} />
-                  <div className="text-xl font-bold" style={{ color: "hsl(155 20% 92%)" }}>{value}</div>
+                  <motion.div
+                    key={value}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.15 }}
+                    className="text-xl font-bold"
+                    style={{ color: "hsl(155 20% 92%)" }}
+                  >
+                    {value}
+                  </motion.div>
                   <div className="text-xs" style={{ color: "hsl(155 20% 52%)" }}>{label}</div>
                 </div>
               ))}
@@ -192,9 +216,9 @@ export default function VisitorStats() {
                     return (
                       <motion.div
                         key={c.country}
-                        initial={{ opacity: 0, x: -8 }}
+                        initial={{ opacity: 0, x: -6 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.04 }}
+                        transition={{ delay: i * 0.02, duration: 0.15 }}
                         className="flex items-center gap-2"
                       >
                         <img
@@ -214,7 +238,7 @@ export default function VisitorStats() {
                               style={{ background: "hsl(155 50% 45%)" }}
                               initial={{ width: 0 }}
                               animate={{ width: `${pct}%` }}
-                              transition={{ duration: 0.5, delay: i * 0.04 }}
+                              transition={{ duration: 0.3, delay: i * 0.02 }}
                             />
                           </div>
                           <span className="text-xs w-6 text-right" style={{ color: "hsl(155 20% 58%)" }}>
@@ -233,7 +257,9 @@ export default function VisitorStats() {
                   className="mt-2 w-full flex items-center justify-center gap-1 text-xs py-1.5 rounded-lg transition-colors"
                   style={{ color: "hsl(155 40% 52%)", background: "hsl(155 32% 13%)" }}
                 >
-                  {expanded ? <><ChevronUp className="w-3 h-3" /> Show less</> : <><ChevronDown className="w-3 h-3" /> Show all {stats.countries.length} countries</>}
+                  {expanded
+                    ? <><ChevronUp className="w-3 h-3" /> Show less</>
+                    : <><ChevronDown className="w-3 h-3" /> Show all {stats.countries.length} countries</>}
                 </button>
               )}
             </div>
