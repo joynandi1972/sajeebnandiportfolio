@@ -17,28 +17,69 @@ export default function Experience() {
   ];
 
   return (
-    <section id="experience" className="section-padding bg-background">
+    <section id="experience" className="section-padding bg-background relative overflow-hidden">
+      <div className="absolute top-1/3 right-0 w-80 h-80 pointer-events-none"
+        style={{ background: "radial-gradient(circle at 90% 50%, hsl(155 40% 85% / 0.08), transparent 60%)" }} />
+
       <div className="container-max" ref={ref}>
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }} className="text-center mb-14">
           <h2 className="section-title">Experience</h2>
-          <div className="section-divider mx-auto" />
+          <motion.div
+            initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+          />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">A journey through research, leadership, and social impact</p>
         </motion.div>
 
         <div className="relative max-w-3xl mx-auto">
-          <div className="absolute left-5 top-2 bottom-2 w-0.5 hidden sm:block" style={{ background: "hsl(var(--primary-muted))" }} />
+          {/* Animated timeline line */}
+          <motion.div
+            className="absolute left-5 top-2 w-0.5 hidden sm:block origin-top"
+            style={{ background: "linear-gradient(180deg, hsl(var(--primary)), hsl(var(--primary-muted)))" }}
+            initial={{ scaleY: 0 }} animate={inView ? { scaleY: 1 } : {}}
+            transition={{ duration: 1.2, delay: 0.3, ease: "easeInOut" }}
+          >
+            <div className="absolute inset-0" style={{ height: "100%" }} />
+          </motion.div>
+          {/* Fallback static line height */}
+          <div className="absolute left-5 top-2 bottom-2 w-0.5 hidden sm:block -z-10"
+            style={{ background: "hsl(var(--primary-muted))" }} />
+
           <div className="space-y-8">
             {Array.from({ length: EXP_COUNT }, (_, i) => (
-              <motion.div key={i} initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ duration: 0.55, delay: 0.15 + i * 0.12 }}
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -30 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.55, delay: 0.15 + i * 0.14 }}
                 className="relative sm:pl-14">
-                <div className="hidden sm:flex absolute left-3 top-6 w-5 h-5 rounded-full items-center justify-center z-10"
-                  style={{ background: expColors[i], boxShadow: `0 0 0 3px hsl(var(--primary-muted))` }} />
-                <div className="p-6 rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300 group">
+                {/* Timeline dot */}
+                <motion.div
+                  className="hidden sm:flex absolute left-[10px] top-6 w-5 h-5 rounded-full items-center justify-center z-10"
+                  style={{ background: expColors[i], boxShadow: `0 0 0 3px hsl(var(--primary-muted)), 0 0 12px ${expColors[i]}40` }}
+                  initial={{ scale: 0 }} animate={inView ? { scale: 1 } : {}}
+                  transition={{ delay: 0.3 + i * 0.14, type: "spring", stiffness: 300 }}
+                />
+                <motion.div
+                  whileHover={{ y: -4, boxShadow: "0 16px 40px -8px hsl(155 40% 20% / 0.15)" }}
+                  className="p-6 rounded-xl bg-card border border-border transition-all duration-300 group relative overflow-hidden">
+                  {/* Hover shine */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl"
+                    style={{ background: "linear-gradient(135deg, hsl(155 40% 96% / 0.5) 0%, transparent 50%)" }} />
+                  {/* Left accent on hover */}
+                  <div className="absolute left-0 top-3 bottom-3 w-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ background: expColors[i] }} />
+
                   <div className="flex flex-wrap items-start justify-between gap-2 mb-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 sm:hidden" style={{ background: "hsl(var(--primary-muted))" }}>
+                      <motion.div
+                        whileHover={{ scale: 1.15, rotate: -5 }}
+                        className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 sm:hidden"
+                        style={{ background: "hsl(var(--primary-muted))" }}>
                         <Briefcase className="w-5 h-5 text-primary" />
-                      </div>
+                      </motion.div>
                       <div>
                         <h3 className="font-display font-semibold text-lg text-foreground group-hover:text-primary transition-colors">
                           <EditableText contentKey={`exp.${i}.title`} className="font-display font-semibold text-lg" />
@@ -49,7 +90,8 @@ export default function Experience() {
                       </div>
                     </div>
                     <div className="flex flex-col items-end gap-1.5">
-                      <span className="px-3 py-0.5 rounded-full text-xs font-semibold" style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))" }}>
+                      <span className="px-3 py-0.5 rounded-full text-xs font-semibold"
+                        style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))" }}>
                         <EditableText contentKey={`exp.${i}.type`} className="text-xs" />
                       </span>
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -58,15 +100,19 @@ export default function Experience() {
                       </span>
                     </div>
                   </div>
-                  <ul className="mt-3 space-y-1.5">
+                  <ul className="mt-3 space-y-2">
                     {[0, 1, 2].map(j => (
-                      <li key={j} className="flex items-start gap-2 text-sm text-foreground/75">
+                      <motion.li
+                        key={j}
+                        initial={{ opacity: 0, x: -10 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+                        transition={{ delay: 0.3 + i * 0.14 + j * 0.06 }}
+                        className="flex items-start gap-2 text-sm text-foreground/75">
                         <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
                         <EditableText contentKey={`exp.${i}.point${j}`} className="text-sm" />
-                      </li>
+                      </motion.li>
                     ))}
                   </ul>
-                </div>
+                </motion.div>
               </motion.div>
             ))}
           </div>

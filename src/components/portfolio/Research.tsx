@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { FlaskConical, Award, Calendar, ChevronRight, Microscope } from "lucide-react";
+import { Calendar, ChevronRight, Microscope, Award } from "lucide-react";
 import { EditableText } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
 
@@ -15,11 +15,22 @@ export default function Research() {
   const pointCounts = [3, 4];
 
   return (
-    <section id="research" className="section-padding" style={{ background: "hsl(var(--secondary))" }}>
+    <section id="research" className="section-padding relative overflow-hidden" style={{ background: "hsl(var(--secondary))" }}>
+      <div className="absolute bottom-0 left-0 w-96 h-96 pointer-events-none"
+        style={{ background: "radial-gradient(circle at 20% 80%, hsl(155 40% 60% / 0.07), transparent 60%)" }} />
+      <div className="absolute top-0 right-0 w-72 h-72 pointer-events-none"
+        style={{ background: "radial-gradient(circle at 80% 20%, hsl(155 40% 60% / 0.06), transparent 60%)" }} />
+
       <div className="container-max" ref={ref}>
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center mb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }} className="text-center mb-14">
           <h2 className="section-title">Research</h2>
-          <div className="section-divider mx-auto" />
+          <motion.div
+            initial={{ width: 0 }} animate={inView ? { width: 64 } : { width: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            style={{ height: "4px", background: "linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary-glow)))", borderRadius: "9999px", margin: "0 auto 2rem" }}
+          />
           <p className="text-muted-foreground text-base max-w-xl mx-auto">Exploring plant science and sustainable food systems through rigorous research</p>
         </motion.div>
 
@@ -28,12 +39,30 @@ export default function Research() {
             const Icon = resIcons[i];
             const tags = get(`res.${i}.tags`).split(",").map(t => t.trim()).filter(Boolean);
             return (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6, delay: 0.15 + i * 0.15 }}
-                className="p-7 rounded-2xl bg-card border border-border hover:border-primary/30 hover:shadow-card-hover transition-all duration-300 group">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.18 }}
+                whileHover={{ y: -5 }}
+                className="p-7 rounded-2xl bg-card border border-border transition-all duration-300 group relative overflow-hidden"
+                style={{ boxShadow: "0 2px 10px hsl(155 30% 15% / 0.05)" }}>
+                {/* Hover glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
+                  style={{ boxShadow: "inset 0 0 60px hsl(155 40% 80% / 0.06)", background: "linear-gradient(135deg, hsl(155 40% 98% / 0.4) 0%, transparent 60%)" }} />
+                {/* Top accent line */}
+                <motion.div
+                  className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ background: "linear-gradient(90deg, transparent, hsl(var(--primary)), transparent)" }}
+                />
+
                 <div className="flex flex-col sm:flex-row gap-5">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200" style={{ background: "hsl(var(--primary-muted))" }}>
+                  <motion.div
+                    whileHover={{ scale: 1.15, rotate: 5 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                    className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: "hsl(var(--primary-muted))" }}>
                     <Icon className="w-6 h-6 text-primary" />
-                  </div>
+                  </motion.div>
                   <div className="flex-1">
                     <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
                       <div>
@@ -45,7 +74,8 @@ export default function Research() {
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold" style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))" }}>
+                        <span className="px-3 py-1 rounded-full text-xs font-semibold"
+                          style={{ background: "hsl(var(--primary-muted))", color: "hsl(var(--primary))" }}>
                           <EditableText contentKey={`res.${i}.badge`} className="text-xs" />
                         </span>
                         <span className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -59,17 +89,27 @@ export default function Research() {
                     </p>
                     <ul className="space-y-1.5 mb-4">
                       {Array.from({ length: pointCounts[i] }, (_, j) => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/70">
+                        <motion.li
+                          key={j}
+                          initial={{ opacity: 0, x: -10 }} animate={inView ? { opacity: 1, x: 0 } : {}}
+                          transition={{ delay: 0.3 + i * 0.18 + j * 0.06 }}
+                          className="flex items-start gap-2 text-sm text-foreground/70">
                           <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
                           <EditableText contentKey={`res.${i}.point${j}`} className="text-sm" />
-                        </li>
+                        </motion.li>
                       ))}
                     </ul>
                     <div className="flex flex-wrap gap-2">
-                      {tags.map(tag => (
-                        <span key={tag} className="px-2.5 py-0.5 rounded text-xs font-medium" style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}>
+                      {tags.map((tag, ti) => (
+                        <motion.span
+                          key={tag}
+                          initial={{ opacity: 0, scale: 0.8 }} animate={inView ? { opacity: 1, scale: 1 } : {}}
+                          transition={{ delay: 0.5 + ti * 0.06 }}
+                          whileHover={{ scale: 1.06, y: -1 }}
+                          className="px-2.5 py-0.5 rounded text-xs font-medium cursor-default"
+                          style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}>
                           {tag}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
@@ -80,12 +120,19 @@ export default function Research() {
         </div>
 
         {/* Research Interests */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5, delay: 0.5 }} className="text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.5 }} className="text-center">
           <h3 className="font-display font-semibold text-xl text-foreground mb-5">Research Interests</h3>
           <div className="flex flex-wrap justify-center gap-3">
             {interests.map((interest, i) => (
-              <motion.span key={interest} initial={{ opacity: 0, scale: 0.85 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 0.55 + i * 0.06 }}
-                className="px-5 py-2 rounded-full text-sm font-medium border transition-all duration-200 hover:scale-105 hover:shadow-green cursor-default"
+              <motion.span
+                key={interest}
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={inView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                transition={{ delay: 0.55 + i * 0.07, type: "spring", stiffness: 200 }}
+                whileHover={{ scale: 1.08, y: -3, boxShadow: "0 8px 20px hsl(155 40% 20% / 0.15)" }}
+                className="px-5 py-2 rounded-full text-sm font-medium border transition-all duration-200 cursor-default"
                 style={{ background: "hsl(var(--card))", color: "hsl(var(--primary))", borderColor: "hsl(var(--primary) / 0.3)" }}>
                 🌱 {interest}
               </motion.span>
