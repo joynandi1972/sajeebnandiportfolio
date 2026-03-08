@@ -200,9 +200,11 @@ export default function Hero() {
               initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.7 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold leading-tight mb-4"
               style={{ color: "hsl(0 0% 97%)" }}>
-              <EditableText contentKey="hero.name.first" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold" style={{ color: "hsl(0 0% 97%)" } as React.CSSProperties} />
+              <span style={{ color: "hsl(0 0% 97%)", textTransform: "uppercase" }}>
+                <EditableText contentKey="hero.name.first" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold" style={{ color: "hsl(0 0% 97%)" } as React.CSSProperties} />
+              </span>
               <br />
-              <span style={{ background: "linear-gradient(135deg, hsl(155 60% 70%), hsl(165 65% 55%), hsl(145 55% 65%))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+              <span style={{ background: "linear-gradient(135deg, hsl(155 60% 70%), hsl(165 65% 55%), hsl(145 55% 65%))", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", textTransform: "uppercase" }}>
                 <EditableText contentKey="hero.name.last" className="text-4xl sm:text-5xl lg:text-6xl font-display font-bold" />
               </span>
             </motion.h1>

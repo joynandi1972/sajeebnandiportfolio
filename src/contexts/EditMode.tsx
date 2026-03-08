@@ -134,6 +134,17 @@ export const DEFAULT_CONTENT: Record<string, string> = {
   "skill.4.desc": "Professional writing, reporting, and stakeholder communication",
   "skill.4.level": "87",
 
+  // Microsoft Office
+  "skill.5.name": "MS Word",
+  "skill.5.desc": "Document writing, formatting, and academic reporting",
+  "skill.5.level": "90",
+  "skill.6.name": "MS Excel",
+  "skill.6.desc": "Data entry, formulas, charts, and spreadsheet analysis",
+  "skill.6.level": "90",
+  "skill.7.name": "MS PowerPoint",
+  "skill.7.desc": "Presentation design for academic and research purposes",
+  "skill.7.level": "90",
+
   // Achievements
   "ach.0.title": "Silver Innovator Award",
   "ach.0.org": "International Poster Presentation Competition",
