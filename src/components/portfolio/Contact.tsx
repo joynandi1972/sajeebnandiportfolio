@@ -80,9 +80,9 @@ export default function Contact() {
                   key={label}
                   initial={{ opacity: 0, y: 12 }} animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.25 + i * 0.1 }}
-                  whileHover={{ y: -3 }}
-                  className="flex items-start gap-3.5 p-4 rounded-xl border border-border bg-card transition-all duration-200 group shine-on-hover"
-                  style={{ boxShadow: "var(--shadow-card)" }}>
+                  whileHover={{ y: -4, rotateX: 3, scale: 1.02 }}
+                  className="flex items-start gap-3.5 p-4 rounded-xl transition-all duration-200 group glass-card-3d"
+                  style={{ transformStyle: "preserve-3d", perspective: "600px" }}>
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 5 }}
                     className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
