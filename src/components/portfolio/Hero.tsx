@@ -4,6 +4,7 @@ import { MapPin, Mail, Linkedin, ChevronDown, Camera, Upload, X, Check, Sparkles
 import profileImg from "@/assets/profile.png";
 import { EditableText } from "./Editable";
 import { useEditMode } from "@/contexts/EditMode";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const STORAGE_KEY = "sajeeb_portfolio_profile_photo";
 
@@ -70,6 +71,13 @@ function useTypewriter(words: string[], speed = 80, pause = 2000) {
 export default function Hero() {
   const { photo, save, remove } = useProfilePhoto();
   const { isEditing, isOwnerView, get } = useEditMode();
+  const isMobile = useIsMobile();
+
+  // Desktop-only: auto-scale up text & image on mount
+  const desktopScaleVariants = {
+    hidden: { opacity: 0, scale: 0.88 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.9, ease: "easeOut" as const } },
+  };
   const [hovering, setHovering] = useState(false);
   const [toast, setToast] = useState<"saved" | "removed" | null>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -183,7 +191,12 @@ export default function Hero() {
       <div className="container-max w-full section-padding py-28 md:py-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Text */}
-          <div className="order-2 lg:order-1">
+          <motion.div
+            className="order-2 lg:order-1"
+            variants={!isMobile ? desktopScaleVariants : undefined}
+            initial={!isMobile ? "hidden" : false}
+            animate={!isMobile ? "visible" : false}
+          >
             <motion.div
               initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1, duration: 0.6 }}
               className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-medium mb-6"
@@ -273,12 +286,14 @@ export default function Hero() {
                 View Research
               </motion.button>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* Profile Photo with 3D tilt */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
+            variants={!isMobile ? desktopScaleVariants : undefined}
+            initial={!isMobile ? "hidden" : { opacity: 0, scale: 0.85 }}
+            animate={!isMobile ? "visible" : { opacity: 1, scale: 1 }}
+            transition={isMobile ? { delay: 0.3, duration: 0.7, ease: "easeOut" } : undefined}
             className="order-1 lg:order-2 flex flex-col items-center lg:items-end gap-4"
             onMouseMove={handleMouseMove}
             onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}>
