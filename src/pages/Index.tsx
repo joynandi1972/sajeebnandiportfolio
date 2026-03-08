@@ -56,8 +56,16 @@ const Index = ({ showEdit = false }: IndexProps) => {
     const blockKeyboard = (e: KeyboardEvent) => {
       const blocked = (
         (e.ctrlKey || e.metaKey) && ["c", "s", "a", "u", "p"].includes(e.key.toLowerCase())
-      ) || e.key === "F12" || (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(e.key.toLowerCase()));
-      if (blocked) e.preventDefault();
+      ) || e.key === "F12"
+        || (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(e.key.toLowerCase()))
+        || e.key === "PrintScreen";
+      if (blocked) {
+        e.preventDefault();
+        // Blank clipboard after PrintScreen attempt
+        if (e.key === "PrintScreen") {
+          navigator.clipboard?.writeText("").catch(() => {});
+        }
+      }
     };
     const blockDrag = (e: DragEvent) => e.preventDefault();
 
@@ -85,6 +93,13 @@ const Index = ({ showEdit = false }: IndexProps) => {
 
   return (
     <div className={`min-h-screen bg-background font-body${!showEdit ? " no-select" : ""}`}>
+      {/* Watermark overlay — visible in screenshots, invisible in normal viewing */}
+      {!showEdit && (
+        <div
+          aria-hidden="true"
+          className="watermark-overlay"
+        />
+      )}
       {showEdit && <EditBar />}
       {showEdit && <VisitorStats />}
       <Navbar />
