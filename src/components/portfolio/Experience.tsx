@@ -17,7 +17,7 @@ const expColors = [
 export default function Experience() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const { isOwnerView } = useEditMode();
+  const { isOwnerView, get } = useEditMode();
   const { count, add, remove } = useDynamicSection("exp", 4);
 
   return (
@@ -111,12 +111,16 @@ export default function Experience() {
                       </div>
                     </div>
                     <ul className="mt-3 space-y-2">
-                      {[0, 1, 2].map(j => (
-                        <li key={j} className="flex items-start gap-2 text-sm text-foreground/75 text-justify">
-                          <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
-                          <EditableText contentKey={`exp.${i}.point${j}`} className="text-sm text-justify" placeholder={`Key point ${j + 1}`} />
-                        </li>
-                      ))}
+                      {[0, 1, 2].map(j => {
+                        const val = get(`exp.${i}.point${j}`);
+                        if (!isOwnerView && !val) return null;
+                        return (
+                          <li key={j} className="flex items-start gap-2 text-sm text-foreground/75 text-justify">
+                            <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                            <EditableText contentKey={`exp.${i}.point${j}`} className="text-sm text-justify" placeholder={`Key point ${j + 1}`} />
+                          </li>
+                        );
+                      })}
                     </ul>
                   </motion.div>
                 </motion.div>
