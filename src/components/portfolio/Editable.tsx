@@ -13,6 +13,7 @@ interface EditableTextProps {
 export function EditableText({
   contentKey,
   className = "",
+  style,
   placeholder,
   as: Tag = "span",
   multiline = false,
