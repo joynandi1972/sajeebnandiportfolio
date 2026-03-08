@@ -18,11 +18,11 @@ export const DEFAULT_CONTENT: Record<string, string> = {
   // About
   "about.title": "About Me",
   "about.para1":
-    "I'm Sajeeb Nandi, a Botany undergraduate at the University of Barishal, Bangladesh. My academic journey has taken me from the laboratory to international research stages, driven by a deep curiosity about plant science and sustainable agriculture.",
+    "Botany undergraduate with hands-on experience in academic research, international research presentation, leadership fellowships, and administrative internships. Currently working as an Admin & HR Intern at the YSSE Social Responsibility Wing, supporting organizational operations and social impact initiatives.",
   "about.para2":
-    "Currently serving as an Admin & HR Intern at the YSSE Social Responsibility Wing, I support organizational operations and social impact initiatives. As a selected OMLAS Fellow, I received training in governance frameworks, public policy analysis, and sustainability — collaborating with an international cohort of emerging leaders.",
+    "Selected OMLAS Fellow with exposure to public policy, sustainability, and leadership development. Completed structured training in governance frameworks, public policy analysis, and sustainable development and leadership skills.",
   "about.para3":
-    "My research focuses on plant growth regulators, floral biology, and vertical farming for urban food security. I am a strong team player with a passion for bridging research, coordination, and communication to create real-world environmental impact.",
+    "Strong team player with research, coordination, and communication skills.",
   "about.tags": "Plant Science,Sustainable Agriculture,Vertical Farming,Leadership,Data Analysis",
 
   // Education — BSc
@@ -61,60 +61,61 @@ export const DEFAULT_CONTENT: Record<string, string> = {
   "exp.0.org": "YSSE Social Responsibility Wing",
   "exp.0.period": "Dec 2025 – Present",
   "exp.0.type": "Internship",
-  "exp.0.point0": "Supporting administrative and HR operations for the social responsibility wing",
-  "exp.0.point1": "Assisting in coordination, documentation, and professional communication",
-  "exp.0.point2": "Contributing to social impact initiatives and organizational development",
+  "exp.0.point0": "Supporting administrative and HR operations within the YSSE Social Responsibility Wing.",
+  "exp.0.point1": "Assisting in coordination, documentation, and professional communication.",
+  "exp.0.point2": "",
 
   // Experience – OMLAS
-  "exp.1.title": "OMLAS Fellow",
+  "exp.1.title": "Fellow — OMLAS Fellowship",
   "exp.1.org": "OMLAS Fellowship",
   "exp.1.period": "Jul 2025 – Oct 2025",
   "exp.1.type": "Fellowship",
-  "exp.1.point0": "Training in governance frameworks, public policy analysis, and sustainability",
-  "exp.1.point1": "Leadership development through hands-on policy simulation exercises",
-  "exp.1.point2": "Collaboration with an international cohort of fellows from diverse backgrounds",
+  "exp.1.point0": "Selected through a competitive fellowship process focused on leadership development and public policy.",
+  "exp.1.point1": "Completed structured training in governance frameworks, public policy analysis, sustainable development and leadership skills.",
+  "exp.1.point2": "Collaborated with an international cohort of fellows to discuss, evaluate, and exchange ideas on policy challenges and leadership perspectives.",
 
   // Experience – Biology Olympiad
-  "exp.2.title": "Regional Organizer",
-  "exp.2.org": "Bangladesh Biology Olympiad — Barishal Region",
-  "exp.2.period": "Ongoing",
+  "exp.2.title": "Regional Organizer (Enzyme)",
+  "exp.2.org": "Bangladesh Biology Olympiad, Barishal Region",
+  "exp.2.period": "May 2026",
   "exp.2.type": "Volunteer",
-  "exp.2.point0": "Managed participant coordination and volunteer teams across the region",
-  "exp.2.point1": "Oversaw event logistics and operations for the Biology Olympiad",
-  "exp.2.point2": "Fostered engagement of young students in biological sciences",
+  "exp.2.point0": "Served as an Enzyme (core organizing member) for the Bangladesh Biology Olympiad 2025, Barishal Reg.",
+  "exp.2.point1": "Managed participant coordination, volunteer teams, and on-ground event operations.",
+  "exp.2.point2": "",
 
   // Experience – Botany Club
-  "exp.3.title": "Organizer — Botany Club Seminar",
-  "exp.3.org": "Event: \"Generation Green: Voices for Climate Resilience\"",
-  "exp.3.period": "2024",
+  "exp.3.title": "Organizer — Botany Club",
+  "exp.3.org": "Botany Club",
+  "exp.3.period": "Jan 2026",
   "exp.3.type": "Organizing",
-  "exp.3.point0": "Coordinated event management and logistical planning",
-  "exp.3.point1": "Led team collaboration and participant engagement activities",
-  "exp.3.point2": "Championed climate awareness and environmental advocacy through the event",
+  "exp.3.point0": "Organized the seminar \"Generation Green: Voices for Climate Resilience\" focused on climate resilience and youth leadership.",
+  "exp.3.point1": "Managed event coordination, participant engagement, and team collaboration.",
+  "exp.3.point2": "",
 
   // Research – Marigold
   "res.0.title": "Plant Growth Regulators & Floral Traits of Marigold",
-  "res.0.subtitle": "Undergraduate Research Project — Botany",
+  "res.0.subtitle": "Research Project (Botany)",
   "res.0.period": "Jan 2025 – Aug 2025",
   "res.0.badge": "Botany Research",
   "res.0.description":
-    "Investigated the effects of plant growth regulators on the floral traits and development of Tagetes erecta (African Marigold). Conducted systematic fieldwork, morphological measurements, and statistical analysis to derive insights into PGR-mediated growth responses.",
-  "res.0.point0": "Designed and executed field experiments with controlled PGR treatments",
-  "res.0.point1": "Collected morphological and phenological data over the growing season",
-  "res.0.point2": "Performed statistical analysis and prepared comprehensive research documentation",
+    "Executed an undergraduate research study on plant growth regulators and their impact on growth and floral traits of marigold (Tagetes erecta).",
+  "res.0.point0": "Performed fieldwork, data collection, statistical analysis, and research documentation.",
+  "res.0.point1": "",
+  "res.0.point2": "",
+  "res.0.point3": "",
   "res.0.tags": "Plant Biology,Tagetes Erecta,Field Research,Statistical Analysis",
 
   // Research – Vertical Farming
-  "res.1.title": "Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas",
-  "res.1.subtitle": "International Poster Presentation Competition",
+  "res.1.title": "Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas of Bangladesh",
+  "res.1.subtitle": "Research Team Member — International Poster Presentation Competition",
   "res.1.period": "Jul 2025 – Oct 2025",
   "res.1.badge": "🥈 Silver Innovator Award",
   "res.1.description":
-    "Co-authored and presented research on hydroponic and aeroponic vertical farming as a solution to urban food security challenges in Bangladesh. The research received the prestigious Silver Innovator Award at the international competition.",
-  "res.1.point0": "Co-authored research on vertical farming for urban Bangladesh context",
-  "res.1.point1": "Developed research poster and presentation for international audience",
-  "res.1.point2": "Explored hydroponics, aeroponics, and nutrient film technique (NFT) systems",
-  "res.1.point3": "Received Silver Innovator Award at the international competition",
+    "Co-authored and presented a research study titled \"Soil-less Vertical Farming: Sustainable Fresh Food Production in Urban Areas of Bangladesh\".",
+  "res.1.point0": "Awarded Silver Innovator Award for research quality, innovation, and presentation.",
+  "res.1.point1": "",
+  "res.1.point2": "",
+  "res.1.point3": "",
   "res.1.tags": "Vertical Farming,Hydroponics,Urban Agriculture,Sustainability",
 
   // Skills
