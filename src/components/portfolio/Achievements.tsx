@@ -189,8 +189,8 @@ export default function Achievements() {
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-400 pointer-events-none rounded-2xl"
                     style={{ background: "radial-gradient(circle at 30% 30%, hsl(155 40% 80% / 0.06), transparent 60%)" }} />
 
-                  {/* Remove button */}
-                  {count > 1 && (
+                  {/* Remove button — owner only */}
+                  {isOwnerView && count > 1 && (
                     <button
                       onClick={() => remove(i)}
                       className="absolute top-3 right-3 w-7 h-7 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 hover:scale-110 z-10"
@@ -225,9 +225,9 @@ export default function Achievements() {
                   <div className="mt-auto pt-2">
                     {cert ? (
                       <CertThumbnail src={cert} onView={() => setLightbox(i)} onRemove={() => removeCert(i)} />
-                    ) : (
+                    ) : isOwnerView ? (
                       <CertUpload index={i} onUpload={handleUpload} />
-                    )}
+                    ) : null}
                   </div>
                 </motion.div>
               );
@@ -235,15 +235,17 @@ export default function Achievements() {
           </AnimatePresence>
         </div>
 
-        {/* Add achievement button */}
-        <motion.button
-          whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-          onClick={add}
-          className="mt-8 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
-          style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
-          <Plus className="w-4 h-4" />
-          Add Achievement
-        </motion.button>
+        {/* Add achievement button — owner only */}
+        {isOwnerView && (
+          <motion.button
+            whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+            onClick={add}
+            className="mt-8 w-full flex items-center justify-center gap-2 py-3.5 rounded-xl border-2 border-dashed text-sm font-semibold transition-all duration-200 hover:border-solid"
+            style={{ borderColor: "hsl(var(--primary) / 0.4)", color: "hsl(var(--primary))", background: "hsl(var(--primary-muted) / 0.3)" }}>
+            <Plus className="w-4 h-4" />
+            Add Achievement
+          </motion.button>
+        )}
       </div>
 
       <AnimatePresence>
